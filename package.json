@@ -19,5 +19,9 @@
   "bugs": {
     "url": "https://github.com/punkave/launder/issues"
   },
-  "homepage": "https://github.com/punkave/launder"
+  "homepage": "https://github.com/punkave/launder",
+  "dependencies": {
+    "lodash": "^3.2.0",
+    "moment": "^2.9.0"
+  }
 }
