@@ -10,11 +10,6 @@ function Launder(options) {
 		return tag.toLowerCase();
 	};
 
-
-	// METHODS!
-
-
-
 	self.string = function(s, def) {
     if (typeof(s) !== 'string') {
       if (typeof(s) === 'number') {
@@ -59,10 +54,10 @@ function Launder(options) {
         i = def;
       }
     }
-    if ((min !== undefined) && (i < min)) {
+    if ((typeof(min) === 'number') && (i < min)) {
       i = min;
     }
-    if ((max !== undefined) && (i > max)) {
+    if ((typeof(max) === 'number') && (i > max)) {
       i = max;
     }
     return i;
@@ -90,10 +85,10 @@ function Launder(options) {
         i = def;
       }
     }
-    if ((min !== undefined) && (i < min)) {
+    if ((typeof(min) === 'number') && (i < min)) {
       i = min;
     }
-    if ((max !== undefined) && (i > max)) {
+    if ((typeof(max) === 'number') && (i > max)) {
       i = max;
     }
     return i;
@@ -107,27 +102,309 @@ function Launder(options) {
       return s;
     }
     s = fixUrl(s);
-    // console.log(s);
     if (s === null) {
+      return def;
+    }
+    s = naughtyHref(s);
+    if (s === true) {
+    	return def;
+    }
+    return s;
+
+
+    function fixUrl(href) {
+	    if (href.match(/^(((https?|ftp)\:\/\/)|mailto\:|\#|([^\/\.]+)?\/|[^\/\.]+$)/)) {
+	      // All good - no change required
+	      return href;
+	    } else if (href.match(/^[^\/\.]+\.[^\/\.]+/)) {
+	      // Smells like a domain name. Educated guess: they left off http://
+	      return 'http://' + href;
+	    } else {
+	      return null;
+	    }
+	  };
+
+	  function naughtyHref(href) {
+	    // Browsers ignore character codes of 32 (space) and below in a surprising
+	    // number of situations. Start reading here:
+	    // https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet#Embedded_tab
+	    href = href.replace(/[\x00-\x20]+/g, '');
+	    // Clobber any comments in URLs, which the browser might
+	    // interpret inside an XML data island, allowing
+	    // a javascript: URL to be snuck through
+	    href = href.replace(/<\!\-\-.*?\-\-\>/g, '');
+	    // Case insensitive so we don't get faked out by JAVASCRIPT #1
+	    var matches = href.match(/^([a-zA-Z]+)\:/);
+	    if (!matches) {
+	      // No scheme = no way to inject js (right?)
+	      return href;
+	    }
+	    var scheme = matches[1].toLowerCase();
+	    return (!_.contains([ 'http', 'https', 'ftp', 'mailto' ], scheme)) ? true : href;
+	  }
+  };
+
+  self.select = function(s, choices, def) {
+    if (!choices || !choices.length) {
+      return def;
+    }
+    if (typeof(choices[0]) === 'object') {
+      if (_.find(choices, function(choice) {
+        return choice.value === s;
+      }) !== undefined) {
+        return s;
+      }
+      return def;
+    }
+    if (!_.contains(choices, s)) {
       return def;
     }
     return s;
   };
-
-
-  // HELPERS
-
-  function fixUrl(href) {
-    if (href.match(/^(((https?|ftp)\:\/\/)|mailto\:|\#|([^\/\.]+)?\/|[^\/\.]+$)/)) {
-      // All good - no change required
-      // console.log('good domain?');
-      return href;
-    } else if (href.match(/^[^\/\.]+\.[^\/\.]+/)) {
-      // Smells like a domain name. Educated guess: they left off http://
-      return 'http://' + href;
-    } else {
-      return null;
+  
+  self.boolean = function(b, def) {
+    if (b === true) {
+      return true;
     }
+    if (b === false) {
+      return false;
+    }
+    b = self.string(b, def);
+    if (b === def) {
+      if (b === undefined) {
+        return false;
+      }
+      return b;
+    }
+    b = b.toLowerCase().charAt(0);
+    if (b === '') {
+      return false;
+    }
+    if ((b === 't') || (b === 'y') || (b === '1')) {
+      return true;
+    }
+    return false;
+  };
+
+  // Given an `options` object in which options[name] is a string
+  // set to '0', '1', or 'any', this method adds mongodb criteria
+  // to the `criteria` object.
+  //
+  // false, true and null are accepted as synonyms for '0', '1' and 'any' (or default).
+  //
+  // '0' or false means "the property must be false or absent," '1' or true
+  // means "the property must be true," and 'any' or null means "we don't care
+  // what the property is."
+  //
+  // An empty string is considered equivalent to '0'.
+  //
+  // This is not the same as apos.sanitizeBoolean which is concerned only with
+  // true or false and does not address "any."
+  //
+  // `def` defaults to `any`.
+  //
+  // This method is most often used with REST API parameters and forms.
+
+  self.addBooleanFilterToCriteria = function(options, name, criteria, def) {
+  	// if any or null, we aren't changing criteria
+    if (def === undefined) {
+      def = 'any';
+    }
+    // allow object or boolean
+    var value = (typeof(options) === 'object' && options !== null) ? options[name] : options;
+    value = (value === undefined) ? def : value;
+
+    if ((value === 'any') || (value === null)) {
+      // Don't care, show all
+    } else if (!self.boolean(value)) {
+      // Must be absent or false. Hooray for $ne
+      criteria[name] = { $ne: true };
+    } else {
+      // Must be true
+      criteria[name] = true;
+    }
+  };
+
+  // Accept a user-entered string in YYYY-MM-DD, MM/DD, MM/DD/YY, or MM/DD/YYYY format
+  // (tolerates missing leading zeroes on MM and DD). Also accepts a Date object.
+  // Returns YYYY-MM-DD.
+  //
+  // The current year is assumed when MM/DD is used. If there is no explicit default
+  // any unparseable date is returned as today's date.
+
+  self.date = function(date, def) {
+    var components;
+
+    function returnDefault() {
+      if (def === undefined) {
+        def = moment().format('YYYY-MM-DD');
+      }
+      return def;
+    }
+
+    if (typeof(date) === 'string') {
+      if (date.match(/\//)) {
+        components = date.split('/');
+        if (components.length === 2) {
+          // Convert mm/dd to yyyy-mm-dd
+          return (new Date()).getFullYear() + '-' + self.padInteger(components[0], 2) + '-' + self.padInteger(components[1], 2);
+        } else if (components.length === 3) {
+          // Convert mm/dd/yyyy to yyyy-mm-dd
+          if (components[2] < 100) {
+          	// Convert yy to yyyy
+            components[2] = parseInt(components[2]) + 1900;
+          }
+          return self.padInteger(components[2], 4) + '-' + self.padInteger(components[0], 2) + '-' + self.padInteger(components[1], 2);
+        } else {
+          return returnDefault();
+        }
+      } else if (date.match(/\-/)) {
+        components = date.split('-');
+        if (components.length === 2) {
+          // Convert mm-dd to yyyy-mm-dd
+          return (new Date()).getFullYear() + '-' + self.padInteger(components[0], 2) + '-' + self.padInteger(components[1], 2);
+        } else if (components.length === 3) {
+          // Convert yyyy-mm-dd (with questionable padding) to yyyy-mm-dd
+          return self.padInteger(components[0], 4) + '-' + self.padInteger(components[1], 2) + '-' + self.padInteger(components[2], 2);
+        } else {
+          return returnDefault();
+        }
+      }
+    }
+    try {
+      date = new Date(date);
+      if (isNaN(date.getTime())) {
+        return returnDefault();
+      }
+      return date.getFullYear() + '-' + self.padInteger(date.getMonth() + 1, 2) + '-' + self.padInteger(date.getDate(), 2);
+    } catch (e) {
+      return returnDefault();
+    }
+  };
+
+  // This is likely not relevent to you unless you're using Apostrophe
+  // Given a date object, return a date string in Apostrophe's preferred sortable, comparable, JSON-able format,
+  // which is YYYY-MM-DD. If `date` is undefined the current date is used.
+  self.formatDate = function(date) {
+    return moment(date).format('YYYY-MM-DD');
+  };
+
+  // Accepts a user-entered string in 12-hour or 24-hour time and returns a string
+  // in 24-hour time. This method is tolerant of syntax such as `4pm`; minutes and
+  // seconds are optional.
+  //
+  // If `def` is not set the default is the current time.
+
+  self.time = function(time, def) {
+    time = self.string(time).toLowerCase();
+    time = time.trim();
+    var components = time.match(/^(\d+)(:(\d+))?(:(\d+))?\s*(am|pm|AM|PM)?$/);
+    if (components) {
+      var hours = parseInt(components[1], 10);
+      var minutes = (components[3] !== undefined) ? parseInt(components[3], 10) : 0;
+      var seconds = (components[5] !== undefined) ? parseInt(components[5], 10) : 0;
+      var ampm = (components[6]) ? components[6].toLowerCase() : components[6];
+      if ((hours === 12) && (ampm === 'am')) {
+        hours -= 12;
+      } else if ((hours === 12) && (ampm === 'pm')) {
+        // Leave it be
+      } else if (ampm === 'pm') {
+        hours += 12;
+      }
+      if ((hours === 24) || (hours === '24')) {
+        hours = 0;
+      }
+      return self.padInteger(hours, 2) + ':' + self.padInteger(minutes, 2) + ':' + self.padInteger(seconds, 2);
+    } else {
+      if (def !== undefined) {
+        return def;
+      }
+      return moment().format('HH:mm');
+    }
+  };
+
+  // This is likely not relevent to you unless you're using Apostrophe
+  // Given a JavaScript Date object, return a time string in
+  // Apostrophe's preferred sortable, comparable, JSON-able format:
+  // 24-hour time, with seconds.
+  //
+  // If `date` is missing the current time is used.
+
+  self.formatTime = function(date) {
+    return moment(date).format('HH:mm:ss');
+  };
+
+  // Sanitize tags. Tags should be submitted as an array of strings.
+  // This method ensures the array is an array and the items in the
+  // array are strings. This method may also be used to sanitize
+  // an array of IDs.
+  //
+  // If a filterTag function is passed as an option when initializing
+  // Launder, then all tags are passed through it (as individual
+  // strings, one per call) and the return value is used instead. You
+	// may also pass a filterTag when calling this function
+
+  self.tags = function(tags, filter) {
+    if (!Array.isArray(tags)) {
+      return [];
+    }
+    tags = _.map(tags, function(tag) {
+      if (typeof(tag) === 'number') {
+        tag = tag.toString();
+      }
+      return tag;
+    });
+    tags = _.filter(tags, function(tag) {
+      return (typeof(tag) === 'string');
+    });
+    if (filter) {
+    	tags = _.map(tags, filter);
+    } else if (self.filterTag) {
+      tags = _.map(tags, self.filterTag);
+    }
+    return tags;
+  };
+
+
+  // Sanitize an id. IDs must consist solely of upper and lower case
+  // letters and numbers, digits, and underscores. 
+  self.id = function(s, def) {
+    var id = self.string(s, def);
+    if (id === def) {
+      return id;
+    }
+    if (!id.match(/^[A-Za-z0-9\_]+$/)) {
+      return def;
+    }
+    return id;
+  };
+
+  // Sanitize an array of IDs. IDs must consist solely of upper and lower case
+  // letters and numbers, digits, and underscores. Any elements that are not
+  // IDs are omitted from the final array.
+  self.ids = function(ids) {
+    if (!Array.isArray(ids)) {
+      return [];
+    }
+    result = _.filter(ids, function(id) {
+      return (self.id(id) !== undefined);
+    });
+    return result;
+  };
+
+
+  // Requires a time in HH:MM or HH:MM:ss format. Returns
+  // an object with hours, minutes and seconds properties.
+  // See apos.sanitizeTime for an easy way to get a time into the
+  // appropriate input format.
+  // Undocumented function
+  self.parseTime = function(time) {
+    var components = time.match(/^(\d\d):(\d\d)(:(\d\d))$/);
+    return {
+      hours: time[1],
+      minutes: time[2],
+      seconds: time[3] || 0
+    };
   };
 
 }
