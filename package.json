@@ -1,0 +1,23 @@
+{
+  "name": "launder",
+  "version": "0.0.1",
+  "description": "A sanitize module for the people. Built for Apostrophe CMS.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/punkave/launder.git"
+  },
+  "keywords": [
+    "sanitize",
+    "launder"
+  ],
+  "author": "P'unk Avenue LLC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/punkave/launder/issues"
+  },
+  "homepage": "https://github.com/punkave/launder"
+}
