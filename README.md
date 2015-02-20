@@ -180,6 +180,8 @@ Pads the specified integer with leading zeroes to ensure it has at least `places
 
 ## Changelog
 
+0.1.1: removed never-used and undocumented `parseTime` method.
+
 0.1.0: initial release. Based on stable code recently refactored from Apostrophe 0.5.x.
 
 ## About P'unk Avenue and Apostrophe
