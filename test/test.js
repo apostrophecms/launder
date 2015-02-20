@@ -9,7 +9,7 @@ describe('launder', function() {
     assert(launder);  
   });
 
-  describe('instatiation', function(){
+  describe('instantiation', function(){
 
 	  it('should have default filterTag function', function(){
 	  	assert(typeof(launder.filterTag) === 'function');
@@ -96,7 +96,7 @@ describe('launder', function() {
       assert(launder.id);    
     });
 
-    it('should have a `ids` method', function() {      
+    it('should have an `ids` method', function() {      
       assert(launder.ids);    
     });
   });
@@ -208,8 +208,7 @@ describe('float', function(){
 		it('should add http:// when missing', function(){			
 			assert(launder.url('www.apostrophenow.org') === 'http://www.apostrophenow.org');	
 		});
-		// NOT WORKING
-		it('should return remove spaces from a url', function(){			
+		it('should remove spaces from a url', function(){			
 			assert(launder.url('this is not a url') === 'thisisnotaurl');	
 		});
 		it('should return the default if it is an empty string', function(){			
@@ -221,7 +220,7 @@ describe('float', function(){
 		it('should return the default if it is undefined', function(){			
 			assert(launder.url(undefined, 'http://www.apostrophenow.org') === 'http://www.apostrophenow.org');	
 		});
-		it('should return the default if it is mallicious', function(){			
+		it('should return the default if it is malicious', function(){			
 			assert(launder.url('javascript:alert(\'All your base are belong to us\');', 'http://www.apostrophenow.org') === 'http://www.apostrophenow.org');	
 		});
 	});
@@ -256,6 +255,9 @@ describe('float', function(){
 				],'bye')
 			assert(s === 'bye');	
 		});
+    it('should return the default if the choice is not found in an array', function(){      
+      assert(launder.select('hi',['not','in','here'],'bye') === 'bye'); 
+    });
 	});
 	
 
@@ -360,9 +362,12 @@ describe('float', function(){
 		it('should convert dates in MM/DD/YYYY format', function(){
 			assert(launder.date('2/19/2015') === '2015-02-19');
 		});
-		it('should convert dates in MM/DD/YY format', function(){
-			assert(launder.date('2/19/99') === '1999-02-19');
+		it('should convert dates in MM/DD/YY format to the past century when that is closest', function() {
+			assert(launder.date('2/19/99', new Date(2015, 1, 1)) === '1999-02-19');
 		});
+    it('should convert dates in MM/DD/YY format to the current century when that is closest', function() {
+      assert(launder.date('2/19/15') === '2015-02-19');
+    });
 		it('should use the current year if in MM/DD format', function(){
 			var year = moment().format('YYYY');
 			assert(launder.date('2/19') === year+'-02-19');
@@ -391,9 +396,18 @@ describe('float', function(){
 		it('should show me a good time', function(){
 			assert(launder.time('12:34:56') === '12:34:56');
 		});
+    it('should show me a good, quick time', function(){
+      assert(launder.time('12:34') === '12:34:00');
+    });
+    it('should show me a really quick good time', function(){
+      assert(launder.time('12') === '12:00:00');
+    });
 		it('should convert 12h to 24h', function(){
 			assert(launder.time('4:30pm') === '16:30:00');
 		});
+    it('should not require the m in pm', function(){
+      assert(launder.time('4:30p') === '16:30:00');
+    });
 		it('should handle lower or uppercase meridiems', function(){
 			assert(launder.time('4:30pm') === '16:30:00');
 			assert(launder.time('4:30PM') === '16:30:00');
@@ -472,6 +486,12 @@ describe('float', function(){
 			assert(t[0] === '120');
 			assert(t[1] === '340');
 		});
+    it('should remove empty tags', function() {
+      var t = launder.tags([ '1', '2', '' ]);
+      assert(t.length === 2);
+      assert(t[0] === '1');
+      assert(t[1] === '2');
+    });
 	})
 
 	describe('id', function(){

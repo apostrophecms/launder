@@ -145,6 +145,7 @@ function Launder(options) {
   };
 
   self.select = function(s, choices, def) {
+    s = self.string(s);
     if (!choices || !choices.length) {
       return def;
     }
@@ -232,7 +233,7 @@ function Launder(options) {
   // The current year is assumed when MM/DD is used. If there is no explicit default
   // any unparseable date is returned as today's date.
 
-  self.date = function(date, def) {
+  self.date = function(date, def, now) {
     var components;
 
     function returnDefault() {
@@ -247,13 +248,26 @@ function Launder(options) {
         components = date.split('/');
         if (components.length === 2) {
           // Convert mm/dd to yyyy-mm-dd
-          return (new Date()).getFullYear() + '-' + self.padInteger(components[0], 2) + '-' + self.padInteger(components[1], 2);
+          return (now || new Date()).getFullYear() + '-' + self.padInteger(components[0], 2) + '-' + self.padInteger(components[1], 2);
         } else if (components.length === 3) {
-          // Convert mm/dd/yyyy to yyyy-mm-dd
+          // Convert mm/dd/yy to mm/dd/yyyy
           if (components[2] < 100) {
-          	// Convert yy to yyyy
-            components[2] = parseInt(components[2]) + 1900;
+            // Add the current century. If the result is more than
+            // 50 years in the future, assume they meant the
+            // previous century. Thus in 2015, we find that
+            // we get the intuitive result for both 1/1/75,
+            // 1/1/99 and 1/1/25. It's a nasty habit among
+            // us imprecise humans. -Tom
+            var d = (now || new Date());
+            var nowYear = d.getFullYear() % 100;
+            var nowCentury = d.getFullYear() - nowYear;
+            var theirYear = parseInt(components[2]) + nowCentury;
+            if (theirYear - d.getFullYear() > 50) {
+              theirYear -= 100;
+            }
+            components[2] = theirYear;
           }
+          // Convert mm/dd/yyyy to yyyy-mm-dd
           return self.padInteger(components[2], 4) + '-' + self.padInteger(components[0], 2) + '-' + self.padInteger(components[1], 2);
         } else {
           return returnDefault();
@@ -262,7 +276,7 @@ function Launder(options) {
         components = date.split('-');
         if (components.length === 2) {
           // Convert mm-dd to yyyy-mm-dd
-          return (new Date()).getFullYear() + '-' + self.padInteger(components[0], 2) + '-' + self.padInteger(components[1], 2);
+          return (now || new Date()).getFullYear() + '-' + self.padInteger(components[0], 2) + '-' + self.padInteger(components[1], 2);
         } else if (components.length === 3) {
           // Convert yyyy-mm-dd (with questionable padding) to yyyy-mm-dd
           return self.padInteger(components[0], 4) + '-' + self.padInteger(components[1], 2) + '-' + self.padInteger(components[2], 2);
@@ -272,7 +286,7 @@ function Launder(options) {
       }
     }
     try {
-      date = new Date(date);
+      date = (now || new Date(date));
       if (isNaN(date.getTime())) {
         return returnDefault();
       }
@@ -298,17 +312,18 @@ function Launder(options) {
   self.time = function(time, def) {
     time = self.string(time).toLowerCase();
     time = time.trim();
-    var components = time.match(/^(\d+)(:(\d+))?(:(\d+))?\s*(am|pm|AM|PM)?$/);
+    var components = time.match(/^(\d+)(:(\d+))?(:(\d+))?\s*(am|pm|AM|PM|a|p|A|M)?$/);
     if (components) {
       var hours = parseInt(components[1], 10);
       var minutes = (components[3] !== undefined) ? parseInt(components[3], 10) : 0;
       var seconds = (components[5] !== undefined) ? parseInt(components[5], 10) : 0;
       var ampm = (components[6]) ? components[6].toLowerCase() : components[6];
-      if ((hours === 12) && (ampm === 'am')) {
+      ampm = ampm && ampm.charAt(0);
+      if ((hours === 12) && (ampm === 'a')) {
         hours -= 12;
-      } else if ((hours === 12) && (ampm === 'pm')) {
+      } else if ((hours === 12) && (ampm === 'p')) {
         // Leave it be
-      } else if (ampm === 'pm') {
+      } else if (ampm === 'p') {
         hours += 12;
       }
       if ((hours === 24) || (hours === '24')) {
@@ -348,21 +363,15 @@ function Launder(options) {
     if (!Array.isArray(tags)) {
       return [];
     }
-    tags = _.map(tags, function(tag) {
-      if (typeof(tag) === 'number') {
-        tag = tag.toString();
-      }
-      return tag;
+    return _.filter(
+      _.map(
+        _.map(tags, function(t) {
+          return self.string(t);
+        }),
+        filter || self.filterTag
+      ), function(tag) {
+      return !!tag.length;
     });
-    tags = _.filter(tags, function(tag) {
-      return (typeof(tag) === 'string');
-    });
-    if (filter) {
-    	tags = _.map(tags, filter);
-    } else if (self.filterTag) {
-      tags = _.map(tags, self.filterTag);
-    }
-    return tags;
   };
 
 
