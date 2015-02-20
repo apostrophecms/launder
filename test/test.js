@@ -80,10 +80,6 @@ describe('launder', function() {
       assert(launder.time);    
     });
 
-    it('should have a `parseTime` method', function() {      
-      assert(launder.parseTime);    
-    });
-
     it('should have a `formatTime` method', function() {      
       assert(launder.formatTime);    
     });

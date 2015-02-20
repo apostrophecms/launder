@@ -400,22 +400,6 @@ function Launder(options) {
     });
     return result;
   };
-
-
-  // Requires a time in HH:MM or HH:MM:ss format. Returns
-  // an object with hours, minutes and seconds properties.
-  // See apos.sanitizeTime for an easy way to get a time into the
-  // appropriate input format.
-  // Undocumented function
-  self.parseTime = function(time) {
-    var components = time.match(/^(\d\d):(\d\d)(:(\d\d))$/);
-    return {
-      hours: time[1],
-      minutes: time[2],
-      seconds: time[3] || 0
-    };
-  };
-
 }
 
 
