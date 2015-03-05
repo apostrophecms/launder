@@ -349,10 +349,11 @@ function Launder(options) {
     return moment(date).format('HH:mm:ss');
   };
 
-  // Sanitize tags. Tags should be submitted as an array of strings.
-  // This method ensures the array is an array and the items in the
-  // array are strings. This method may also be used to sanitize
-  // an array of IDs.
+  // Sanitize tags. Tags should be submitted as an array of strings,
+  // or a comma-separated string.
+  //
+  // This method ensures the input is an array or string and, if
+  // an array, that the elements of the array are strings.
   //
   // If a filterTag function is passed as an option when initializing
   // Launder, then all tags are passed through it (as individual
@@ -360,6 +361,9 @@ function Launder(options) {
 	// may also pass a filterTag when calling this function
 
   self.tags = function(tags, filter) {
+    if (typeof(tags) === 'string') {
+      tags = tags.split(/,\s*/);
+    }
     if (!Array.isArray(tags)) {
       return [];
     }
