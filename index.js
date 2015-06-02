@@ -2,15 +2,15 @@ var _ = require('lodash');
 var moment = require('moment');
 
 function Launder(options) {
-	var self = this;
-	self.options = options || {};
+  var self = this;
+  self.options = options || {};
 
-	self.filterTag = self.options.filterTag || function(tag) {
-		tag = tag.trim();
-		return tag.toLowerCase();
-	};
+  self.filterTag = self.options.filterTag || function(tag) {
+    tag = tag.trim();
+    return tag.toLowerCase();
+  };
 
-	self.string = function(s, def) {
+  self.string = function(s, def) {
     if (typeof(s) !== 'string') {
       if (typeof(s) === 'number') {
         s += '';
@@ -107,41 +107,41 @@ function Launder(options) {
     }
     s = naughtyHref(s);
     if (s === true) {
-    	return def;
+      return def;
     }
     return s;
 
 
     function fixUrl(href) {
-	    if (href.match(/^(((https?|ftp)\:\/\/)|mailto\:|\#|([^\/\.]+)?\/|[^\/\.]+$)/)) {
-	      // All good - no change required
-	      return href;
-	    } else if (href.match(/^[^\/\.]+\.[^\/\.]+/)) {
-	      // Smells like a domain name. Educated guess: they left off http://
-	      return 'http://' + href;
-	    } else {
-	      return null;
-	    }
-	  };
+      if (href.match(/^(((https?|ftp)\:\/\/)|mailto\:|\#|([^\/\.]+)?\/|[^\/\.]+$)/)) {
+        // All good - no change required
+        return href;
+      } else if (href.match(/^[^\/\.]+\.[^\/\.]+/)) {
+        // Smells like a domain name. Educated guess: they left off http://
+        return 'http://' + href;
+      } else {
+        return null;
+      }
+    };
 
-	  function naughtyHref(href) {
-	    // Browsers ignore character codes of 32 (space) and below in a surprising
-	    // number of situations. Start reading here:
-	    // https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet#Embedded_tab
-	    href = href.replace(/[\x00-\x20]+/g, '');
-	    // Clobber any comments in URLs, which the browser might
-	    // interpret inside an XML data island, allowing
-	    // a javascript: URL to be snuck through
-	    href = href.replace(/<\!\-\-.*?\-\-\>/g, '');
-	    // Case insensitive so we don't get faked out by JAVASCRIPT #1
-	    var matches = href.match(/^([a-zA-Z]+)\:/);
-	    if (!matches) {
-	      // No scheme = no way to inject js (right?)
-	      return href;
-	    }
-	    var scheme = matches[1].toLowerCase();
-	    return (!_.contains([ 'http', 'https', 'ftp', 'mailto' ], scheme)) ? true : href;
-	  }
+    function naughtyHref(href) {
+      // Browsers ignore character codes of 32 (space) and below in a surprising
+      // number of situations. Start reading here:
+      // https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet#Embedded_tab
+      href = href.replace(/[\x00-\x20]+/g, '');
+      // Clobber any comments in URLs, which the browser might
+      // interpret inside an XML data island, allowing
+      // a javascript: URL to be snuck through
+      href = href.replace(/<\!\-\-.*?\-\-\>/g, '');
+      // Case insensitive so we don't get faked out by JAVASCRIPT #1
+      var matches = href.match(/^([a-zA-Z]+)\:/);
+      if (!matches) {
+        // No scheme = no way to inject js (right?)
+        return href;
+      }
+      var scheme = matches[1].toLowerCase();
+      return (!_.contains([ 'http', 'https', 'ftp', 'mailto' ], scheme)) ? true : href;
+    }
   };
 
   self.select = function(s, choices, def) {
@@ -162,7 +162,7 @@ function Launder(options) {
     }
     return s;
   };
-  
+
   self.boolean = function(b, def) {
     if (b === true) {
       return true;
@@ -178,7 +178,7 @@ function Launder(options) {
       return b;
     }
     b = b.toLowerCase().charAt(0);
-    if (b === '') {
+    if ((b === '') || (b === 'n') || (b === '0') || (b === 'f')) {
       return false;
     }
     if ((b === 't') || (b === 'y') || (b === '1')) {
@@ -207,23 +207,67 @@ function Launder(options) {
   // This method is most often used with REST API parameters and forms.
 
   self.addBooleanFilterToCriteria = function(options, name, criteria, def) {
-  	// if any or null, we aren't changing criteria
+    // if any or null, we aren't changing criteria
     if (def === undefined) {
-      def = 'any';
+      def = null;
     }
+
     // allow object or boolean
     var value = (typeof(options) === 'object' && options !== null) ? options[name] : options;
     value = (value === undefined) ? def : value;
+    value = self.booleanOrNull(value);
 
-    if ((value === 'any') || (value === null)) {
+    if (value === null) {
       // Don't care, show all
-    } else if (!self.boolean(value)) {
+    } else if (!value) {
       // Must be absent or false. Hooray for $ne
       criteria[name] = { $ne: true };
     } else {
       // Must be true
       criteria[name] = true;
     }
+  };
+
+  // Accept true, false, or null and return them exactly
+  // as such; if the parameter is none of those, return def.
+  // Also accept '0', '1' and 'any' as synonyms.
+  //
+  // This is useful for tristate filters ("published,"
+  // "unpublished", "don't care").
+
+  self.booleanOrNull = function(b, def) {
+    if (b === true) {
+      return b;
+    }
+    if (b === false) {
+      return b;
+    }
+    if (b === null) {
+      return b;
+    }
+
+    b = self.string(b, def);
+    if (b === def) {
+      if (def === undefined) {
+        return null;
+      }
+      return b;
+    }
+    b = b.toLowerCase().charAt(0);
+
+    if ((b === '') || (b === 'n') || (b === '0') || (b === 'f')) {
+      return false;
+    }
+
+    if ((b === 't') || (b === 'y') || (b === '1')) {
+      return true;
+    }
+
+    if ((b === 'a')) {
+      return null;
+    }
+
+    return def;
   };
 
   // Accept a user-entered string in YYYY-MM-DD, MM/DD, MM/DD/YY, or MM/DD/YYYY format
@@ -358,7 +402,7 @@ function Launder(options) {
   // If a filterTag function is passed as an option when initializing
   // Launder, then all tags are passed through it (as individual
   // strings, one per call) and the return value is used instead. You
-	// may also pass a filterTag when calling this function
+  // may also pass a filterTag when calling this function
 
   self.tags = function(tags, filter) {
     if (typeof(tags) === 'string') {
