@@ -108,7 +108,12 @@ describe('launder', function() {
 
 		it('should convert a number to a string', function(){			
 			assert(launder.string(1234) === '1234');	
-		})
+		});
+
+		it('should convert a boolean to a string', function() {
+			assert(launder.string(true) === 'true');
+			assert(launder.string(false) === 'false');
+		});
 
 		it('should convert non-string/non-number to an empty string', function(){			
 			assert(launder.string({an: 'object'}) === '');

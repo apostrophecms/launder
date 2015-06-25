@@ -12,7 +12,7 @@ function Launder(options) {
 
   self.string = function(s, def) {
     if (typeof(s) !== 'string') {
-      if (typeof(s) === 'number') {
+      if ((typeof(s) === 'number') || (typeof(s) === 'boolean')) {
         s += '';
       } else {
         s = '';
