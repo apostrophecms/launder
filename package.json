@@ -1,7 +1,7 @@
 {
   "name": "launder",
-  "version": "0.1.4",
-  "description": "A sanitize module for the people. Built for Apostrophe CMS.",
+  "version": "1.0.0",
+  "description": "A sanitize module for the people. Built for apostrophecms.",
   "main": "index.js",
   "scripts": {
     "test": "mocha test/test.js"
@@ -21,10 +21,10 @@
   },
   "homepage": "https://github.com/punkave/launder",
   "dependencies": {
-    "lodash": "^3.2.0",
-    "moment": "^2.9.0"
+    "@sailshq/lodash": "^3.10.3",
+    "moment": "^2.22.1"
   },
   "devDependencies": {
-    "mocha": "2.1.x"
+    "mocha": "^5.0.0"
   }
 }

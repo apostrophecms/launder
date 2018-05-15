@@ -1,8 +1,8 @@
 [![Build Status](https://travis-ci.org/punkave/launder.svg?branch=master)](https://travis-ci.org/punkave/launder)
 
-<a href="http://apostrophenow.org/"><img src="https://raw.github.com/punkave/launder/master/logos/logo-box-madefor.png" align="right" /></a>
+<a href="https://apostrophecms.org/"><img src="https://raw.github.com/punkave/launder/master/logos/logo-box-madefor.png" align="right" /></a>
 
-A sanitization module for the people. Built for use in the [Apostrophe CMS](http://apostrophenow.org), useful for many other things.
+A sanitization module for the people. Built for use in the [Apostrophe CMS](https://apostrophecms.org), useful for many other things.
 
 ## Purpose
 
@@ -179,6 +179,8 @@ Output the given `Date` object in `HH:mm:ss` format. This is the canonical time 
 Pads the specified integer with leading zeroes to ensure it has at least `places` digits and returns the resulting string.
 
 ## Changelog
+
+1.0.0: switched to a maintained, secure fork of lodash 3, declared 1.0.0 as this has been a stable part of Apostrophe for years.
 
 0.1.3: `launder.booleanOrNull` broken out from `launder.addBooleanFilterCriteria` so that you can get the tri-state value without modifying a criteria object.
 
