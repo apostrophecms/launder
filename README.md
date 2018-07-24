@@ -180,6 +180,8 @@ Pads the specified integer with leading zeroes to ensure it has at least `places
 
 ## Changelog
 
+1.0.1: `launder.time` will now also accept a `.` (dot) as the separator (until now only `:` colon was recognized)
+
 1.0.0: switched to a maintained, secure fork of lodash 3, declared 1.0.0 as this has been a stable part of Apostrophe for years.
 
 0.1.3: `launder.booleanOrNull` broken out from `launder.addBooleanFilterCriteria` so that you can get the tri-state value without modifying a criteria object.
