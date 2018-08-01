@@ -180,7 +180,7 @@ Pads the specified integer with leading zeroes to ensure it has at least `places
 
 ## Changelog
 
-1.0.1: `launder.time` will now also accept a `.` (dot) as the separator (until now only `:` colon was recognized)
+1.0.1: `launder.time` will now also accept a `.` (dot) as the separator (until now only `:` colon was recognized). Thanks to Lars Houmark.
 
 1.0.0: switched to a maintained, secure fork of lodash 3, declared 1.0.0 as this has been a stable part of Apostrophe for years.
 
