@@ -356,7 +356,7 @@ function Launder(options) {
   self.time = function(time, def) {
     time = self.string(time).toLowerCase();
     time = time.trim();
-    var components = time.match(/^(\d+)(:(\d+))?(:(\d+))?\s*(am|pm|AM|PM|a|p|A|M)?$/);
+    var components = time.match(/^(\d+)([:|.](\d+))?([:|.](\d+))?\s*(am|pm|AM|PM|a|p|A|M)?$/);
     if (components) {
       var hours = parseInt(components[1], 10);
       var minutes = (components[3] !== undefined) ? parseInt(components[3], 10) : 0;

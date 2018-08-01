@@ -413,6 +413,19 @@ describe('float', function(){
 			assert(launder.time('4:30pm') === '16:30:00');
 			assert(launder.time('4:30PM') === '16:30:00');
 		});
+		it('should accept dot as time separator', function(){
+			assert(launder.time('4.30pm') === '16:30:00');
+			assert(launder.time('4.30PM') === '16:30:00');
+		});
+		it('should accept dot and colon mixed as time separator', function(){
+			assert(launder.time('3.52:05pm') === '15:52:05');
+			assert(launder.time('4:32.23a') === '04:32:23');
+		});
+		it('should accept not accept any time separator', function(){
+			assert(launder.time('3q52b05pm') !== '15:52:05');
+			assert(launder.time('4 32 23a') !== '04:32:23');
+			assert(launder.time('12Qpm') !== '12:00:00');
+		});
 		it('should handle no minutes', function(){
 			assert(launder.time('4 PM') === '16:00:00');
 		});
