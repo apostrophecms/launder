@@ -252,12 +252,18 @@ describe('float', function(){
 			var s = launder.select('hi', [
 				{ name: 'Not something', value: 'not' },
 				{ name: 'Inside', value: 'in' },
-				{ name: 'Here anymore', valu: 'here'}
+				{ name: 'Here anymore', value: 'here'}
 				],'bye')
 			assert(s === 'bye');	
 		});
     it('should return the default if the choice is not found in an array', function(){      
       assert(launder.select('hi',['not','in','here'],'bye') === 'bye'); 
+    });
+    it('should match a string input matching the string representation of a choice that is a number, and return the number, not the string', function(){
+      assert(launder.select('5',[1, 3, 5],1) === 5);
+    });
+    it('should match a number matching a choice that is a number, and return the number, not a stringification of it', function(){
+      assert(launder.select(5,[1, 3, 5],1) === 5);
     });
 	});
 	
