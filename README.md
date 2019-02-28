@@ -75,6 +75,8 @@ www.mycompany.com/my/page.html
 
 Sanitize a choice made via a `select` element. If `choice` is one of the `choices`, it is returned, otherwise `def` is returned. If `choices` is an array of objects, then `choice` is compared to the `value` property of each object to find a match.
 
+Choices can be numbers or strings. The choices and the input value are compared as strings. The matching choice is returned with its original type.
+
 ### `launder.boolean(b, def)`
 
 Sanitize a boolean value.
