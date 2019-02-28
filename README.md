@@ -180,6 +180,10 @@ Pads the specified integer with leading zeroes to ensure it has at least `places
 
 ## Changelog
 
+1.1.0: `launder.select` now handles numeric values for choices gracefully. Specifically, if the value passed in is a string, it will be validated as a match for a choice that is a number, as long as they have the same string representation, and the number (not the string) will be returned. Previously there was no match in this situation.
+
+Thanks to Michelin for making this possible via [Apostrophe Enterprise Support](https://apostrophecms.org/support/enterprise-support).
+
 1.0.1: `launder.time` will now also accept a `.` (dot) as the separator (until now only `:` colon was recognized). Thanks to Lars Houmark.
 
 1.0.0: switched to a maintained, secure fork of lodash 3, declared 1.0.0 as this has been a stable part of Apostrophe for years.

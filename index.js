@@ -149,18 +149,23 @@ function Launder(options) {
     if (!choices || !choices.length) {
       return def;
     }
+    var choice;
     if (typeof(choices[0]) === 'object') {
-      if (_.find(choices, function(choice) {
-        return choice.value === s;
-      }) !== undefined) {
-        return s;
+      choice = _.find(choices, function(choice) {
+        return choice.value.toString() === s;
+      });
+      if (choice !== undefined) {
+        return choice.value;
       }
       return def;
     }
-    if (!_.contains(choices, s)) {
-      return def;
+    choice = _.find(choices, function(choice) {
+      return choice.toString() === s;
+    });
+    if (choice !== undefined) {
+      return choice;
     }
-    return s;
+    return def;
   };
 
   self.boolean = function(b, def) {
