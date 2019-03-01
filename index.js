@@ -154,11 +154,9 @@ function Launder(options) {
       choice = _.find(choices, function(choice) {
         if (choice.value) {
           return choice.value.toString() === s;
-        } else {
-          return choice.value === s;
         }
       });
-      if (choice !== undefined) {
+      if (choice !== undefined && choice.value) {
         return choice.value;
       }
       return def;
