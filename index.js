@@ -152,7 +152,11 @@ function Launder(options) {
     var choice;
     if (typeof(choices[0]) === 'object') {
       choice = _.find(choices, function(choice) {
-        return choice.value.toString() === s;
+        if (choice.value) {
+          return choice.value.toString() === s;
+        } else {
+          return choice.value === s;
+        }
       });
       if (choice !== undefined) {
         return choice.value;
