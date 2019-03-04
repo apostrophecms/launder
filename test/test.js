@@ -248,6 +248,18 @@ describe('float', function(){
 		it('should return the default if the choice is not found in an array', function(){			
 			assert(launder.select('hi',['not','in','here'],'bye') === 'bye');	
 		});
+		it('should not crash if a null choice is present', function(){			
+			assert(launder.select('yes',['not',null,'yes']) === 'yes');	
+		});
+		it('should not crash if an undefined choice is present', function(){			
+			assert(launder.select('yes',['not',undefined,'yes']) === 'yes');	
+		});
+		it('should not crash if a null choice is present, with labels', function(){			
+			assert(launder.select('yes',[{ value: 'not', label: 'Not' }, { value: null, label: 'broken' }, { value: 'yes', label: 'Yes' }]) === 'yes');	
+		});
+		it('should not crash if an undefined choice is present, with labels', function(){			
+			assert(launder.select('yes',[{ value: 'not', label: 'Not' }, { value: undefined, label: 'broken' }, { value: 'yes', label: 'Yes' }]) === 'yes');	
+		});
 		it('should return the default if the choice is not found in an object', function(){			
 			var s = launder.select('hi', [
 				{ name: 'Not something', value: 'not' },

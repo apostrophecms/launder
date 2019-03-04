@@ -152,6 +152,10 @@ function Launder(options) {
     var choice;
     if (typeof(choices[0]) === 'object') {
       choice = _.find(choices, function(choice) {
+        if ((choice.value === null) || (choice.value === undefined)) {
+          // Don't crash on invalid choices
+          return; 
+        }     
         return choice.value.toString() === s;
       });
       if (choice !== undefined) {
@@ -160,6 +164,10 @@ function Launder(options) {
       return def;
     }
     choice = _.find(choices, function(choice) {
+      if ((choice === null) || (choice === undefined)) {
+        // Don't crash on invalid choices
+        return; 
+      }     
       return choice.toString() === s;
     });
     if (choice !== undefined) {
