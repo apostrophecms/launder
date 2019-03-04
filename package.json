@@ -1,6 +1,6 @@
 {
   "name": "launder",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A sanitize module for the people. Built for apostrophecms.",
   "main": "index.js",
   "scripts": {

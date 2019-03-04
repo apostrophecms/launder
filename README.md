@@ -182,6 +182,7 @@ Pads the specified integer with leading zeroes to ensure it has at least `places
 
 ## Changelog
 
+1.1.1: for improved bc, `launder.select` does not crash if some of the choices given to `select` are null or undefined. Although this is a developer error rather than a sanitization issue, versions prior to 1.1.0 did tolerate this situation, so 1.1.1 does so as well. Thanks to Anthony Tarlao for his code contributions, and to Michelin for making this fix possible via [Apostrophe Enterprise Support](https://apostrophecms.org/support/enterprise-support).
 1.1.0: `launder.select` now handles numeric values for choices gracefully. Specifically, if the value passed in is a string, it will be validated as a match for a choice that is a number, as long as they have the same string representation, and the number (not the string) will be returned. Previously there was no match in this situation.
 
 Thanks to Michelin for making this possible via [Apostrophe Enterprise Support](https://apostrophecms.org/support/enterprise-support).
