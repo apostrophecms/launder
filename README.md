@@ -1,6 +1,6 @@
 [![CircleCI](https://circleci.com/gh/apostrophecms/launder/tree/master.svg?style=svg)](https://circleci.com/gh/apostrophecms/launder/tree/master)
 
-<a href="https://apostrophecms.com/"><img src="https://raw.github.com/punkave/launder/master/logos/logo-box-madefor.png" align="right" /></a>
+<a href="https://apostrophecms.com/"><img src="https://raw.github.com/apostrophecms/launder/master/logos/logo-box-madefor.png" align="right" /></a>
 
 A sanitization module for the people. Built for use in the [ApostropheCMS](https://apostrophecms.com), useful for many other things.
 
@@ -199,12 +199,10 @@ Thanks to Michelin for making this possible via [Apostrophe Enterprise Support](
 
 0.1.0: initial release. Based on stable code recently refactored from Apostrophe 0.5.x.
 
-## About P'unk Avenue and Apostrophe
+## About ApostropheCMS
 
-`launder` was created at [P'unk Avenue](https://punkave.com) for use in Apostrophe, an open-source content management system built on node.js. If you like `launder` you should definitely [check out apostrophenow.org](https://apostrophecms.com). Also be sure to visit us on [github](http://github.com/punkave).
+`launder` was created for use in ApostropheCMS, an open-source content management system built on Node.js. If you like `launder` you should definitely [check out apostrophecms.org](https://apostrophecms.com). Also be sure to visit us on [github](http://github.com/apostrophecms).
 
 ## Support
 
 Feel free to open issues on [github](http://github.com/apostrophecms/launder).
-
-<a href="https://punkave.com/"><img src="https://raw.github.com/apostrophecms/launder/master/logos/logo-box-builtby.png" /></a>

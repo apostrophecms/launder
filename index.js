@@ -109,7 +109,7 @@ function Launder(options) {
     return s;
 
     function fixUrl(href) {
-      if (href.match(/^(((https?|ftp|mailto):\/\/)|#|([^/.]+)?\/|[^/.]+$)/)) {
+      if (href.match(/^(((https?|ftp):\/\/)|mailto:|#|([^/.]+)?\/|[^/.]+$)/)) {
         // All good - no change required
         return href;
       } else if (href.match(/^[^/.]+\.[^/.]+/)) {
