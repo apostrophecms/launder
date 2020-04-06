@@ -1,8 +1,8 @@
-[![Build Status](https://travis-ci.org/punkave/launder.svg?branch=master)](https://travis-ci.org/punkave/launder)
+[![CircleCI](https://circleci.com/gh/apostrophecms/launder/tree/master.svg?style=svg)](https://circleci.com/gh/apostrophecms/launder/tree/master)
 
-<a href="https://apostrophecms.org/"><img src="https://raw.github.com/punkave/launder/master/logos/logo-box-madefor.png" align="right" /></a>
+<a href="https://apostrophecms.com/"><img src="https://raw.github.com/punkave/launder/master/logos/logo-box-madefor.png" align="right" /></a>
 
-A sanitization module for the people. Built for use in the [Apostrophe CMS](https://apostrophecms.org), useful for many other things.
+A sanitization module for the people. Built for use in the [ApostropheCMS](https://apostrophecms.com), useful for many other things.
 
 ## Purpose
 
@@ -182,10 +182,10 @@ Pads the specified integer with leading zeroes to ensure it has at least `places
 
 ## Changelog
 
-1.1.1: for improved bc, `launder.select` does not crash if some of the choices given to `select` are null or undefined. Although this is a developer error rather than a sanitization issue, versions prior to 1.1.0 did tolerate this situation, so 1.1.1 does so as well. Thanks to Anthony Tarlao for his code contributions, and to Michelin for making this fix possible via [Apostrophe Enterprise Support](https://apostrophecms.org/support/enterprise-support).
+1.1.1: for improved bc, `launder.select` does not crash if some of the choices given to `select` are null or undefined. Although this is a developer error rather than a sanitization issue, versions prior to 1.1.0 did tolerate this situation, so 1.1.1 does so as well. Thanks to Anthony Tarlao for his code contributions, and to Michelin for making this fix possible via [Apostrophe Enterprise Support](https://apostrophecms.com/support/enterprise-support).
 1.1.0: `launder.select` now handles numeric values for choices gracefully. Specifically, if the value passed in is a string, it will be validated as a match for a choice that is a number, as long as they have the same string representation, and the number (not the string) will be returned. Previously there was no match in this situation.
 
-Thanks to Michelin for making this possible via [Apostrophe Enterprise Support](https://apostrophecms.org/support/enterprise-support).
+Thanks to Michelin for making this possible via [Apostrophe Enterprise Support](https://apostrophecms.com/support/enterprise-support).
 
 1.0.1: `launder.time` will now also accept a `.` (dot) as the separator (until now only `:` colon was recognized). Thanks to Lars Houmark.
 
@@ -201,10 +201,10 @@ Thanks to Michelin for making this possible via [Apostrophe Enterprise Support](
 
 ## About P'unk Avenue and Apostrophe
 
-`launder` was created at [P'unk Avenue](http://punkave.com) for use in Apostrophe, an open-source content management system built on node.js. If you like `launder` you should definitely [check out apostrophenow.org](http://apostrophenow.org). Also be sure to visit us on [github](http://github.com/punkave).
+`launder` was created at [P'unk Avenue](https://punkave.com) for use in Apostrophe, an open-source content management system built on node.js. If you like `launder` you should definitely [check out apostrophenow.org](https://apostrophecms.com). Also be sure to visit us on [github](http://github.com/punkave).
 
 ## Support
 
-Feel free to open issues on [github](http://github.com/punkave/launder).
+Feel free to open issues on [github](http://github.com/apostrophecms/launder).
 
-<a href="http://punkave.com/"><img src="https://raw.github.com/punkave/launder/master/logos/logo-box-builtby.png" /></a>
+<a href="https://punkave.com/"><img src="https://raw.github.com/apostrophecms/launder/master/logos/logo-box-builtby.png" /></a>

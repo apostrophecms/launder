@@ -109,10 +109,10 @@ function Launder(options) {
     return s;
 
     function fixUrl(href) {
-      if (href.match(/^(((https?|ftp)\:\/\/)|mailto\:|\#|([^\/\.]+)?\/|[^\/\.]+$)/)) {
+      if (href.match(/^(((https?|ftp|mailto):\/\/)|#|([^/.]+)?\/|[^/.]+$)/)) {
         // All good - no change required
         return href;
-      } else if (href.match(/^[^\/\.]+\.[^\/\.]+/)) {
+      } else if (href.match(/^[^/.]+\.[^/.]+/)) {
         // Smells like a domain name. Educated guess: they left off http://
         return 'http://' + href;
       } else {
@@ -123,14 +123,15 @@ function Launder(options) {
     function naughtyHref(href) {
       // Browsers ignore character codes of 32 (space) and below in a surprising
       // number of situations. Start reading here:
-      // https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet#Embedded_tab
+      // https://owasp.org/www-community/xss-filter-evasion-cheatsheet#embedded-tab
+      // eslint-disable-next-line no-control-regex
       href = href.replace(/[\x00-\x20]+/g, '');
       // Clobber any comments in URLs, which the browser might
       // interpret inside an XML data island, allowing
       // a javascript: URL to be snuck through
-      href = href.replace(/<\!\-\-.*?\-\-\>/g, '');
+      href = href.replace(/<!--.*?-->/g, '');
       // Case insensitive so we don't get faked out by JAVASCRIPT #1
-      var matches = href.match(/^([a-zA-Z]+)\:/);
+      var matches = href.match(/^([a-zA-Z]+):/);
       if (!matches) {
         // No scheme = no way to inject js (right?)
         return href;
@@ -325,7 +326,7 @@ function Launder(options) {
         } else {
           return returnDefault();
         }
-      } else if (date.match(/\-/)) {
+      } else if (date.match(/-/)) {
         components = date.split('-');
         if (components.length === 2) {
           // Convert mm-dd to yyyy-mm-dd
@@ -438,7 +439,7 @@ function Launder(options) {
     if (id === def) {
       return id;
     }
-    if (!id.match(/^[A-Za-z0-9\_]+$/)) {
+    if (!id.match(/^[A-Za-z0-9_]+$/)) {
       return def;
     }
     return id;
@@ -451,7 +452,7 @@ function Launder(options) {
     if (!Array.isArray(ids)) {
       return [];
     }
-    result = _.filter(ids, function(id) {
+    var result = _.filter(ids, function(id) {
       return (self.id(id) !== undefined);
     });
     return result;
