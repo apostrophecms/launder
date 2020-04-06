@@ -1,7 +1,7 @@
 {
   "name": "launder",
-  "version": "1.1.1",
-  "description": "A sanitize module for the people. Built for apostrophecms.",
+  "version": "1.1.2",
+  "description": "A sanitize module for the people. Built for ApostropheCMS.",
   "main": "index.js",
   "scripts": {
     "test": "npx eslint . && mocha test/test.js"
@@ -14,7 +14,7 @@
     "sanitize",
     "launder"
   ],
-  "author": "P'unk Avenue LLC",
+  "author": "Apostrophe Technologies, Inc.",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/apostrophecms/launder/issues"
