@@ -11,8 +11,8 @@ function Launder(options) {
   };
 
   self.string = function(s, def) {
-    if (typeof(s) !== 'string') {
-      if ((typeof(s) === 'number') || (typeof(s) === 'boolean')) {
+    if (typeof (s) !== 'string') {
+      if ((typeof (s) === 'number') || (typeof (s) === 'boolean')) {
         s += '';
       } else {
         s = '';
@@ -40,11 +40,9 @@ function Launder(options) {
     if (def === undefined) {
       def = 0;
     }
-    if (typeof(i) === 'number') {
+    if (typeof (i) === 'number') {
       i = Math.floor(i);
-    }
-    else
-    {
+    } else {
       try {
         i = parseInt(i, 10);
         if (isNaN(i)) {
@@ -54,10 +52,10 @@ function Launder(options) {
         i = def;
       }
     }
-    if ((typeof(min) === 'number') && (i < min)) {
+    if ((typeof (min) === 'number') && (i < min)) {
       i = min;
     }
-    if ((typeof(max) === 'number') && (i > max)) {
+    if ((typeof (max) === 'number') && (i > max)) {
       i = max;
     }
     return i;
@@ -75,7 +73,7 @@ function Launder(options) {
     if (def === undefined) {
       def = 0;
     }
-    if (!(typeof(i) === 'number')) {
+    if (!(typeof (i) === 'number')) {
       try {
         i = parseFloat(i, 10);
         if (isNaN(i)) {
@@ -85,15 +83,14 @@ function Launder(options) {
         i = def;
       }
     }
-    if ((typeof(min) === 'number') && (i < min)) {
+    if ((typeof (min) === 'number') && (i < min)) {
       i = min;
     }
-    if ((typeof(max) === 'number') && (i > max)) {
+    if ((typeof (max) === 'number') && (i > max)) {
       i = max;
     }
     return i;
   };
-
 
   self.url = function(s, def) {
     s = self.string(s, def);
@@ -110,7 +107,6 @@ function Launder(options) {
       return def;
     }
     return s;
-
 
     function fixUrl(href) {
       if (href.match(/^(((https?|ftp)\:\/\/)|mailto\:|\#|([^\/\.]+)?\/|[^\/\.]+$)/)) {
@@ -150,12 +146,12 @@ function Launder(options) {
       return def;
     }
     var choice;
-    if (typeof(choices[0]) === 'object') {
+    if (typeof (choices[0]) === 'object') {
       choice = _.find(choices, function(choice) {
         if ((choice.value === null) || (choice.value === undefined)) {
           // Don't crash on invalid choices
-          return; 
-        }     
+          return;
+        }
         return choice.value.toString() === s;
       });
       if (choice != null) {
@@ -166,8 +162,8 @@ function Launder(options) {
     choice = _.find(choices, function(choice) {
       if ((choice === null) || (choice === undefined)) {
         // Don't crash on invalid choices
-        return; 
-      }     
+        return;
+      }
       return choice.toString() === s;
     });
     if (choice !== undefined) {
@@ -226,7 +222,7 @@ function Launder(options) {
     }
 
     // allow object or boolean
-    var value = (typeof(options) === 'object' && options !== null) ? options[name] : options;
+    var value = (typeof (options) === 'object' && options !== null) ? options[name] : options;
     value = (value === undefined) ? def : value;
     value = self.booleanOrNull(value);
 
@@ -300,7 +296,7 @@ function Launder(options) {
       return def;
     }
 
-    if (typeof(date) === 'string') {
+    if (typeof (date) === 'string') {
       if (date.match(/\//)) {
         components = date.split('/');
         if (components.length === 2) {
@@ -418,7 +414,7 @@ function Launder(options) {
   // may also pass a filterTag when calling this function
 
   self.tags = function(tags, filter) {
-    if (typeof(tags) === 'string') {
+    if (typeof (tags) === 'string') {
       tags = tags.split(/,\s*/);
     }
     if (!Array.isArray(tags)) {
@@ -431,13 +427,12 @@ function Launder(options) {
         }),
         filter || self.filterTag
       ), function(tag) {
-      return !!tag.length;
-    });
+        return !!tag.length;
+      });
   };
 
-
   // Sanitize an id. IDs must consist solely of upper and lower case
-  // letters and numbers, digits, and underscores. 
+  // letters and numbers, digits, and underscores.
   self.id = function(s, def) {
     var id = self.string(s, def);
     if (id === def) {
@@ -462,7 +457,6 @@ function Launder(options) {
     return result;
   };
 }
-
 
 module.exports = function(options) {
   return new Launder(options);
