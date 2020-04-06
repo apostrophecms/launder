@@ -132,7 +132,7 @@ describe('launder', function() {
     });
 
     it('should return an empty array if we pass in something that is not an array', function() {
-      var s = launder.strings({an: 'object', is: 'not', an: 'array'});
+      var s = launder.strings({an: 'object', is: 'not', typeof: 'array'});
       assert(Array.isArray(s));
       assert(s.length === 0);
     });
@@ -234,7 +234,7 @@ describe('launder', function() {
         { name: 'Probably amazing', value: 'p' },
         { name: 'Utterly incredible', value: 'u' },
         { name: 'Never gonna give you up', value: 'n' },
-        { name: 'Kind hearted', value: 'k'}
+        { name: 'Kind hearted', value: 'k' }
       ]);
       assert(s === 'n');
     });
@@ -263,7 +263,7 @@ describe('launder', function() {
       var s = launder.select('hi', [
         { name: 'Not something', value: 'not' },
         { name: 'Inside', value: 'in' },
-        { name: 'Here anymore', value: 'here'}
+        { name: 'Here anymore', value: 'here' }
       ], 'bye');
       assert(s === 'bye');
     });
@@ -315,7 +315,7 @@ describe('launder', function() {
     var criteria = {};
     var optionsTrue = { 'published': true };
     var optionsFalse = { 'published': false };
-    var optionsEmpty = { 'published': ''};
+    var optionsEmpty = { 'published': '' };
 
     it('should not change criteria if option is `any`', function() {
       launder.addBooleanFilterToCriteria('any', name, criteria);
@@ -351,7 +351,7 @@ describe('launder', function() {
       var criteria = {};
       launder.addBooleanFilterToCriteria(true, name, criteria);
       assert(criteria[name] === true);
-      var criteria = {};
+      criteria = {};
       launder.addBooleanFilterToCriteria(false, name, criteria);
       assert(criteria[name]['$ne'] === true);
     });
@@ -390,22 +390,22 @@ describe('launder', function() {
       assert(launder.date('2/19') === year + '-02-19');
     });
     it('should accept a date object', function() {
-      assert(launder.date(new Date(2015, 1, 19)) == '2015-02-19');
+      assert(launder.date(new Date(2015, 1, 19)) === '2015-02-19');
     });
     it('should return current date if the date is not parsable', function() {
       assert(launder.date('waffles') === moment().format('YYYY-MM-DD'));
     });
     it('should return default if the date is not parsable', function() {
-      assert(launder.date('waffles', '1989-12-13') == '1989-12-13');
+      assert(launder.date('waffles', '1989-12-13') === '1989-12-13');
     });
   });
 
   describe('formatDate', function() {
     it('should accept a date object', function() {
-      assert(launder.formatDate(new Date(2015, 1, 19, 11, 22, 33)) == '2015-02-19');
+      assert(launder.formatDate(new Date(2015, 1, 19, 11, 22, 33)) === '2015-02-19');
     });
     it('should default to current date', function() {
-      assert(launder.formatDate() == moment().format('YYYY-MM-DD'));
+      assert(launder.formatDate() === moment().format('YYYY-MM-DD'));
     });
   });
 
@@ -449,16 +449,16 @@ describe('launder', function() {
       assert(launder.time() === moment().format('HH:mm'));
     });
     it('should accept a default', function() {
-      assert(launder.time(null, '12:00:00') == '12:00:00');
+      assert(launder.time(null, '12:00:00') === '12:00:00');
     });
   });
 
   describe('formatTime', function() {
     it('should accept a date object', function() {
-      assert(launder.formatTime(new Date(2015, 1, 19, 11, 22, 33)) == '11:22:33');
+      assert(launder.formatTime(new Date(2015, 1, 19, 11, 22, 33)) === '11:22:33');
     });
     it('should default to current time', function() {
-      assert(launder.formatTime() == moment().format('HH:mm:ss'));
+      assert(launder.formatTime() === moment().format('HH:mm:ss'));
     });
   });
 
@@ -483,7 +483,7 @@ describe('launder', function() {
       assert(t[2] === 'three');
     });
     it('should return an empty array if you pass in something that is not an array', function() {
-      var t = launder.tags({an: 'object', is: 'not', an: 'array'});
+      var t = launder.tags({an: 'object', is: 'not', typeof: 'array'});
       assert(Array.isArray(t));
       assert(t.length === 0);
     });
@@ -547,7 +547,7 @@ describe('launder', function() {
       assert(i[2] === '1003');
     });
     it('should return an empty array if you pass in something that is not an array', function() {
-      var i = launder.ids({an: 'object', is: 'not', an: 'array'});
+      var i = launder.ids({ an: 'object', is: 'not', typeof: 'array' });
       assert(Array.isArray(i));
       assert(i.length === 0);
     });
