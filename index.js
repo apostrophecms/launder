@@ -11,8 +11,8 @@ function Launder(options) {
   };
 
   self.string = function(s, def) {
-    if (typeof(s) !== 'string') {
-      if ((typeof(s) === 'number') || (typeof(s) === 'boolean')) {
+    if (typeof (s) !== 'string') {
+      if ((typeof (s) === 'number') || (typeof (s) === 'boolean')) {
         s += '';
       } else {
         s = '';
@@ -40,11 +40,9 @@ function Launder(options) {
     if (def === undefined) {
       def = 0;
     }
-    if (typeof(i) === 'number') {
+    if (typeof (i) === 'number') {
       i = Math.floor(i);
-    }
-    else
-    {
+    } else {
       try {
         i = parseInt(i, 10);
         if (isNaN(i)) {
@@ -54,10 +52,10 @@ function Launder(options) {
         i = def;
       }
     }
-    if ((typeof(min) === 'number') && (i < min)) {
+    if ((typeof (min) === 'number') && (i < min)) {
       i = min;
     }
-    if ((typeof(max) === 'number') && (i > max)) {
+    if ((typeof (max) === 'number') && (i > max)) {
       i = max;
     }
     return i;
@@ -75,7 +73,7 @@ function Launder(options) {
     if (def === undefined) {
       def = 0;
     }
-    if (!(typeof(i) === 'number')) {
+    if (!(typeof (i) === 'number')) {
       try {
         i = parseFloat(i, 10);
         if (isNaN(i)) {
@@ -85,15 +83,14 @@ function Launder(options) {
         i = def;
       }
     }
-    if ((typeof(min) === 'number') && (i < min)) {
+    if ((typeof (min) === 'number') && (i < min)) {
       i = min;
     }
-    if ((typeof(max) === 'number') && (i > max)) {
+    if ((typeof (max) === 'number') && (i > max)) {
       i = max;
     }
     return i;
   };
-
 
   self.url = function(s, def) {
     s = self.string(s, def);
@@ -111,12 +108,11 @@ function Launder(options) {
     }
     return s;
 
-
     function fixUrl(href) {
-      if (href.match(/^(((https?|ftp)\:\/\/)|mailto\:|\#|([^\/\.]+)?\/|[^\/\.]+$)/)) {
+      if (href.match(/^(((https?|ftp):\/\/)|mailto:|#|([^/.]+)?\/|[^/.]+$)/)) {
         // All good - no change required
         return href;
-      } else if (href.match(/^[^\/\.]+\.[^\/\.]+/)) {
+      } else if (href.match(/^[^/.]+\.[^/.]+/)) {
         // Smells like a domain name. Educated guess: they left off http://
         return 'http://' + href;
       } else {
@@ -127,14 +123,15 @@ function Launder(options) {
     function naughtyHref(href) {
       // Browsers ignore character codes of 32 (space) and below in a surprising
       // number of situations. Start reading here:
-      // https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet#Embedded_tab
+      // https://owasp.org/www-community/xss-filter-evasion-cheatsheet#embedded-tab
+      // eslint-disable-next-line no-control-regex
       href = href.replace(/[\x00-\x20]+/g, '');
       // Clobber any comments in URLs, which the browser might
       // interpret inside an XML data island, allowing
       // a javascript: URL to be snuck through
-      href = href.replace(/<\!\-\-.*?\-\-\>/g, '');
+      href = href.replace(/<!--.*?-->/g, '');
       // Case insensitive so we don't get faked out by JAVASCRIPT #1
-      var matches = href.match(/^([a-zA-Z]+)\:/);
+      var matches = href.match(/^([a-zA-Z]+):/);
       if (!matches) {
         // No scheme = no way to inject js (right?)
         return href;
@@ -150,12 +147,12 @@ function Launder(options) {
       return def;
     }
     var choice;
-    if (typeof(choices[0]) === 'object') {
+    if (typeof (choices[0]) === 'object') {
       choice = _.find(choices, function(choice) {
         if ((choice.value === null) || (choice.value === undefined)) {
           // Don't crash on invalid choices
-          return; 
-        }     
+          return;
+        }
         return choice.value.toString() === s;
       });
       if (choice != null) {
@@ -166,8 +163,8 @@ function Launder(options) {
     choice = _.find(choices, function(choice) {
       if ((choice === null) || (choice === undefined)) {
         // Don't crash on invalid choices
-        return; 
-      }     
+        return;
+      }
       return choice.toString() === s;
     });
     if (choice !== undefined) {
@@ -226,7 +223,7 @@ function Launder(options) {
     }
 
     // allow object or boolean
-    var value = (typeof(options) === 'object' && options !== null) ? options[name] : options;
+    var value = (typeof (options) === 'object' && options !== null) ? options[name] : options;
     value = (value === undefined) ? def : value;
     value = self.booleanOrNull(value);
 
@@ -300,7 +297,7 @@ function Launder(options) {
       return def;
     }
 
-    if (typeof(date) === 'string') {
+    if (typeof (date) === 'string') {
       if (date.match(/\//)) {
         components = date.split('/');
         if (components.length === 2) {
@@ -329,7 +326,7 @@ function Launder(options) {
         } else {
           return returnDefault();
         }
-      } else if (date.match(/\-/)) {
+      } else if (date.match(/-/)) {
         components = date.split('-');
         if (components.length === 2) {
           // Convert mm-dd to yyyy-mm-dd
@@ -418,7 +415,7 @@ function Launder(options) {
   // may also pass a filterTag when calling this function
 
   self.tags = function(tags, filter) {
-    if (typeof(tags) === 'string') {
+    if (typeof (tags) === 'string') {
       tags = tags.split(/,\s*/);
     }
     if (!Array.isArray(tags)) {
@@ -431,19 +428,18 @@ function Launder(options) {
         }),
         filter || self.filterTag
       ), function(tag) {
-      return !!tag.length;
-    });
+        return !!tag.length;
+      });
   };
 
-
   // Sanitize an id. IDs must consist solely of upper and lower case
-  // letters and numbers, digits, and underscores. 
+  // letters and numbers, digits, and underscores.
   self.id = function(s, def) {
     var id = self.string(s, def);
     if (id === def) {
       return id;
     }
-    if (!id.match(/^[A-Za-z0-9\_]+$/)) {
+    if (!id.match(/^[A-Za-z0-9_]+$/)) {
       return def;
     }
     return id;
@@ -456,13 +452,12 @@ function Launder(options) {
     if (!Array.isArray(ids)) {
       return [];
     }
-    result = _.filter(ids, function(id) {
+    var result = _.filter(ids, function(id) {
       return (self.id(id) !== undefined);
     });
     return result;
   };
 }
-
 
 module.exports = function(options) {
   return new Launder(options);
