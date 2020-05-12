@@ -537,8 +537,8 @@ describe('launder', function() {
   });
 
   describe('ids', function() {
-    var goodIds = ['1001', '1002', '1003'];
-    var troubleIds = ['1001', '1002', {an: 'object'}, null, '1003'];
+    var goodIds = [ '1001', '1002', '1003' ];
+    var troubleIds = [ '1001', '1002', { an: 'object' }, null, '1003', '1004-en' ];
     it('should do nothing with a good array of ids', function() {
       var i = launder.ids(goodIds);
       assert(i.length === 3);
@@ -557,6 +557,16 @@ describe('launder', function() {
       assert(i[0] === '1001');
       assert(i[1] === '1002');
       assert(i[2] === '1003');
+    });
+    it('should honor the idsRegExp option', function() {
+      var launder = require('../index.js')({ idRegExp: /^[A-Za-z0-9_-]+$/ });
+      var testIds = [ '1001', '1002', { an: 'object' }, null, '1003', '1004-en' ];
+      var i = launder.ids(testIds);
+      assert.strictEqual(i.length, 4);
+      assert(i[0] === '1001');
+      assert(i[1] === '1002');
+      assert(i[2] === '1003');
+      assert(i[3] === '1004-en');
     });
   });
 

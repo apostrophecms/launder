@@ -1,8 +1,8 @@
 var _ = require('@sailshq/lodash');
 var moment = require('moment');
 
-function Launder(options) {
-  var self = this;
+module.exports = function(options) {
+  var self = {};
   self.options = options || {};
 
   self.filterTag = self.options.filterTag || function(tag) {
@@ -433,13 +433,16 @@ function Launder(options) {
   };
 
   // Sanitize an id. IDs must consist solely of upper and lower case
-  // letters and numbers, digits, and underscores.
+  // letters, numbers, and digits unless options.idRegExp is set.
+
+  self.idRegExp = self.options.idRegExp || /^[A-Za-z0-9_]+$/;
+
   self.id = function(s, def) {
     var id = self.string(s, def);
     if (id === def) {
       return id;
     }
-    if (!id.match(/^[A-Za-z0-9_]+$/)) {
+    if (!id.match(self.idRegExp)) {
       return def;
     }
     return id;
@@ -457,8 +460,5 @@ function Launder(options) {
     });
     return result;
   };
-}
-
-module.exports = function(options) {
-  return new Launder(options);
+  return self;
 };
