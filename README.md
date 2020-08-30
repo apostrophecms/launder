@@ -182,6 +182,8 @@ Pads the specified integer with leading zeroes to ensure it has at least `places
 
 ## Changelog
 
+1.3.0: `booleanOrNull` accepts the string `'null'` as a synonym for `null`. Note that `'any'` was already accepted. `'null'` can be an attractive choice when the user will not see it in the query string and conflict with other uses of `'any'` is a concern.
+
 1.2.0: `idRegExp` option may be passed to change the rules for `launder.id`.
 
 1.1.2: linting.
