@@ -310,6 +310,50 @@ describe('launder', function() {
     });
   });
 
+  describe('booleanOrNull', function() {
+    it('should do nothing to a proper boolean', function() {
+      assert(launder.booleanOrNull(true) === true);
+      assert(launder.booleanOrNull(false) === false);
+    });
+    it('should convert a string to a proper boolean', function() {
+      assert(launder.booleanOrNull('true') === true);
+      assert(launder.booleanOrNull('false') === false);
+    });
+    it('should return true for string of `t`', function() {
+      assert(launder.booleanOrNull('t') === true);
+    });
+    it('should return true for string of `y`', function() {
+      assert(launder.booleanOrNull('y') === true);
+    });
+    it('should return true for string of `1`', function() {
+      assert(launder.booleanOrNull('1') === true);
+    });
+    it('should return true for integer of 1', function() {
+      assert(launder.booleanOrNull(1) === true);
+    });
+    it('should return false for an empty string', function() {
+      assert(launder.booleanOrNull('') === false);
+    });
+    it('should return the default if the empty string is passed', function() {
+      assert(launder.booleanOrNull('', 'yup') === 'yup');
+    });
+    it('should return the default if undefined is passed', function() {
+      assert(launder.booleanOrNull(undefined, 'yup') === 'yup');
+    });
+    it('should return null if null is passed even if there is a default', function() {
+      assert(launder.booleanOrNull(null, 'yup') === null);
+    });
+    it('should return null if null is passed and no default', function() {
+      assert(launder.booleanOrNull(null) === null);
+    });
+    it('should return null if "any" is passed and there is a default', function() {
+      assert(launder.booleanOrNull('any', 'yup') === null);
+    });
+    it('should return null if "null" is passed and there is a default', function() {
+      assert(launder.booleanOrNull('null', 'yup') === null);
+    });
+  });
+
   describe('addBooleanFilterToCriteria', function() {
     var name = 'published';
     var criteria = {};
@@ -558,7 +602,7 @@ describe('launder', function() {
       assert(i[1] === '1002');
       assert(i[2] === '1003');
     });
-    it('should honor the idsRegExp option', function() {
+    it('should honor the idRegExp option', function() {
       var launder = require('../index.js')({ idRegExp: /^[A-Za-z0-9_-]+$/ });
       var testIds = [ '1001', '1002', { an: 'object' }, null, '1003', '1004-en' ];
       var i = launder.ids(testIds);

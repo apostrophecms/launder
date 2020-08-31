@@ -201,11 +201,12 @@ module.exports = function(options) {
   // set to '0', '1', or 'any', this method adds mongodb criteria
   // to the `criteria` object.
   //
-  // false, true and null are accepted as synonyms for '0', '1' and 'any' (or default).
-  //
   // '0' or false means "the property must be false or absent," '1' or true
   // means "the property must be true," and 'any' or null means "we don't care
   // what the property is."
+  //
+  // See `booleanOrNull` for additional synonyms accepted for the
+  // three possible values.
   //
   // An empty string is considered equivalent to '0'.
   //
@@ -238,12 +239,21 @@ module.exports = function(options) {
     }
   };
 
-  // Accept true, false, or null and return them exactly
-  // as such; if the parameter is none of those, return def.
-  // Also accept '0', '1' and 'any' as synonyms.
+  // This method is used for tristate filters, i.e. "published,"
+  // "unpublished", and "show me both".
   //
-  // This is useful for tristate filters ("published,"
-  // "unpublished", "don't care").
+  // Accepts `true`, `false`, or `null` and returns them exactly
+  // as such; if the parameter is none of those or their synonyms
+  // below, returns `def`.
+  //
+  // Also accepts the strings `'yes'` (or starting with y), `'no'` (or
+  // starting with n), `'true'` (or starting with t), `'false'`
+  // (or starting with f), `'1'`, `'0'` and the strings `'any'` and
+  // `'null'`. The string `'null'` must be an exact match, anything
+  // else starting with `n` is taken as `no` (false).
+  //
+  // These various synonyms are useful for string input, such as from
+  // a user friendly query string.
 
   self.booleanOrNull = function(b, def) {
     if (b === true) {
@@ -263,6 +273,12 @@ module.exports = function(options) {
       }
       return b;
     }
+
+    // String 'null' must match as a full string to disambiguate from string 'n' for 'no'
+    if (b === 'null') {
+      return null;
+    }
+
     b = b.toLowerCase().charAt(0);
 
     if ((b === '') || (b === 'n') || (b === '0') || (b === 'f')) {
