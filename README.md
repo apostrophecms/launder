@@ -53,7 +53,7 @@ Converts `f` to a floating-point number. `f` is first coerced to a floating-poin
 
 ### `launder.url(s, def)`
 
-Attempts to ensure that `s` is a valid URL. This method allows only the `http:`, `https:`, `ftp:` and `mailto:` URL schemes, but does allow relative URLs, and attempts to automatically fix common user mistakes such as typing:
+Attempts to ensure that `s` is a valid URL. This method allows only the `http:`, `https:`, `ftp:`, `mailto:`, and `tel:` URL schemes, but does allow relative URLs, and attempts to automatically fix common user mistakes such as typing:
 
 ```
 www.mycompany.com
