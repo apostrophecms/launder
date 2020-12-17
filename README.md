@@ -53,7 +53,7 @@ Converts `f` to a floating-point number. `f` is first coerced to a floating-poin
 
 ### `launder.url(s, def)`
 
-Attempts to ensure that `s` is a valid URL. This method allows only the `http:`, `https:`, `ftp:` and `mailto:` URL schemes, but does allow relative URLs, and attempts to automatically fix common user mistakes such as typing:
+Attempts to ensure that `s` is a valid URL. This method allows only the `http:`, `https:`, `ftp:`, `mailto:`, and `tel:` URL schemes, but does allow relative URLs, and attempts to automatically fix common user mistakes such as typing:
 
 ```
 www.mycompany.com
@@ -181,6 +181,8 @@ Output the given `Date` object in `HH:mm:ss` format. This is the canonical time 
 Pads the specified integer with leading zeroes to ensure it has at least `places` digits and returns the resulting string.
 
 ## Changelog
+
+1.4.0: `tel:` urls are now accepted.
 
 1.3.0: `booleanOrNull` accepts the string `'null'` as a synonym for `null`. Note that `'any'` was already accepted. `'null'` can be an attractive choice when the user will not see it in the query string and conflict with other uses of `'any'` is a concern.
 
