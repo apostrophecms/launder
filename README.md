@@ -51,21 +51,11 @@ Converts `i` to an integer. `i` is first coerced to an integer, if needed; if it
 
 Converts `f` to a floating-point number. `f` is first coerced to a floating-point number, if needed; if it is an empty string, undefined or otherwise not convertible, `def` is returned. If `min` is provided, and the result would be less than `min`, `min` is returned. If `max` is provided, and the result would be greater than `max`, `max` is returned. If `def` is not provided, the default is `0`.
 
-### `launder.url(s, def)`
+### `launder.url(s, def, httpsFix)`
 
-Attempts to ensure that `s` is a valid URL. This method allows only the `http:`, `https:`, `ftp:`, `mailto:`, and `tel:` URL schemes, but does allow relative URLs, and attempts to automatically fix common user mistakes such as typing:
+Attempts to ensure that `s` is a valid URL. This method allows only the `http:`, `https:`, `ftp:`, `mailto:`, and `tel:` URL schemes, but does allow relative URLs.
 
-```
-www.mycompany.com
-```
-
-Or:
-
-```
-www.mycompany.com/my/page.html
-```
-
-... Without supplying the `http:`.
+It attempts to automatically fix common user mistakes such as typing: `www.mycompany.com` or `www.mycompany.com/my/page.html`, not supplying the URL protocol. By default it prepends `http://`. If `httpsFix` is `true`, it prepends `https://`.
 
 `s` is first sanitized with `launder.string()`.
 
@@ -181,6 +171,8 @@ Output the given `Date` object in `HH:mm:ss` format. This is the canonical time 
 Pads the specified integer with leading zeroes to ensure it has at least `places` digits and returns the resulting string.
 
 ## Changelog
+
+1.5.0: The `url` method now accepts a third argument, `httpsFix`. If it is `true` and the URL passed in has no protocol, the URL will be prepended with `https://` rather than `http://`.
 
 1.4.0: `tel:` urls are now accepted.
 

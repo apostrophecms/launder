@@ -92,7 +92,7 @@ module.exports = function(options) {
     return i;
   };
 
-  self.url = function(s, def) {
+  self.url = function(s, def, httpsFix) {
     s = self.string(s, def);
     // Allow the default to be undefined, null, false, etc.
     if (s === def) {
@@ -114,7 +114,8 @@ module.exports = function(options) {
         return href;
       } else if (href.match(/^[^/.]+\.[^/.]+/)) {
         // Smells like a domain name. Educated guess: they left off http://
-        return 'http://' + href;
+        var protocol = httpsFix ? 'https://' : 'http://';
+        return protocol + href;
       } else {
         return null;
       }
