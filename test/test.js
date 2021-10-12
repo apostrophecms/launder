@@ -442,6 +442,9 @@ describe('launder', function() {
     it('should return default if the date is not parsable', function() {
       assert(launder.date('waffles', '1989-12-13') === '1989-12-13');
     });
+    it('should return null if the input and default are both explicitly null', function() {
+      assert.strictEqual(launder.date(null, null), null);
+    });
   });
 
   describe('formatDate', function() {
