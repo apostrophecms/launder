@@ -445,6 +445,13 @@ describe('launder', function() {
     it('should return null if the input and default are both explicitly null', function() {
       assert.strictEqual(launder.date(null, null), null);
     });
+    it('should return null if the date is undefined and the default is null', function() {
+      assert(launder.date(undefined, null) === null);
+    });
+    it('should return today\'s date if the date is undefined and there is no default', function() {
+      const today = new Date().toISOString().slice(0, 10);
+      assert.strictEqual(launder.date(null), today);
+    });
   });
 
   describe('formatDate', function() {
