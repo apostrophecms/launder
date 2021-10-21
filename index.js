@@ -303,6 +303,13 @@ module.exports = function(options) {
   //
   // The current year is assumed when MM/DD is used. If there is no explicit default
   // any unparseable date is returned as today's date.
+  //
+  // If the default is explicitly `null` (not `undefined`) then `null` is returned for
+  // any unparseable date.
+  //
+  // The `now` argument can be passed for performance if you prefer to call
+  // `new Date()` just once before many calls to this method and pass that single
+  // value to all of them.
 
   self.date = function(date, def, now) {
     var components;
@@ -357,6 +364,9 @@ module.exports = function(options) {
       }
     }
     try {
+      if (date === null) {
+        return returnDefault();
+      }
       date = (now || new Date(date));
       if (isNaN(date.getTime())) {
         return returnDefault();

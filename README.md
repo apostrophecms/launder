@@ -92,7 +92,7 @@ If `b` is not `true` or `false`, and `launder.string(b)` returns the empty strin
 
 Converts `d` to a date string in `YYYY-MM-DD` format, such as `2015-02-20`.
 
-`d` must be either a string or a `Date` object, otherwise `def` is returned. *If `def` is undefined, the current date is returned.*
+`d` must be either a string or a `Date` object, otherwise `def` is returned. *If `def` is undefined, the current date is returned. If `def` is `null`, `null` is returned.*
 
 `now` can be the current date object for resolving ambiguous dates. If it is not provided, a new `Date` object is created.
 
@@ -171,6 +171,8 @@ Output the given `Date` object in `HH:mm:ss` format. This is the canonical time 
 Pads the specified integer with leading zeroes to ensure it has at least `places` digits and returns the resulting string.
 
 ## Changelog
+
+1.5.1: The `date` method now correctly returns `null` if the date argument is unparseable and the `def` parameter is explicitly `null`. As was always documented, a default of `undefined` still returns the current date.
 
 1.5.0: The `url` method now accepts a third argument, `httpsFix`. If it is `true` and the URL passed in has no protocol, the URL will be prepended with `https://` rather than `http://`.
 
