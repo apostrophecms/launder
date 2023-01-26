@@ -109,7 +109,7 @@ module.exports = function(options) {
     return s;
 
     function fixUrl(href) {
-      if (href.match(/^(((https?|ftp|tel):\/\/)|mailto:|#|([^/.]+)?\/|[^/.]+$)/)) {
+      if (href.match(/^(((https?|ftp|tel|sms):\/\/)|mailto:|#|([^/.]+)?\/|[^/.]+$)/)) {
         // All good - no change required
         return href;
       } else if (href.match(/^[^/.]+\.[^/.]+/)) {
@@ -138,7 +138,7 @@ module.exports = function(options) {
         return href;
       }
       var scheme = matches[1].toLowerCase();
-      return (!_.contains([ 'http', 'https', 'ftp', 'mailto', 'tel' ], scheme)) ? true : href;
+      return (!_.contains([ 'http', 'https', 'ftp', 'mailto', 'tel', 'sms' ], scheme)) ? true : href;
     }
   };
 
