@@ -223,6 +223,12 @@ describe('launder', function() {
     it('should return the default if it is malicious', function() {
       assert(launder.url('javascript:alert(\'All your base are belong to us\');', 'http://www.apostrophenow.org') === 'http://www.apostrophenow.org');
     });
+    it('should add http: if missing', function() {
+      assert(launder.url('//www.google.com') === 'http://www.google.com');
+    });
+    it('should not match a random url', function() {
+      assert(launder.url('random-tag://123456', 'http://www.apostrophenow.org') === 'http://www.apostrophenow.org');
+    });
   });
 
   describe('select', function() {
