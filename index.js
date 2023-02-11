@@ -132,7 +132,7 @@ module.exports = function(options) {
       // a javascript: URL to be snuck through
       href = href.replace(/<!--.*?-->/g, '');
       // Case insensitive so we don't get faked out by JAVASCRIPT #1
-      var matches = href.match(/^([a-zA-Z]+):/);
+      var matches = href.match(/^(.+):/);
       if (!matches) {
         // No scheme = no way to inject js (right?)
         return href;

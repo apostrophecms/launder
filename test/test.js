@@ -223,11 +223,26 @@ describe('launder', function() {
     it('should return the default if it is malicious', function() {
       assert(launder.url('javascript:alert(\'All your base are belong to us\');', 'http://www.apostrophenow.org') === 'http://www.apostrophenow.org');
     });
-    it('should add http: if missing', function() {
-      assert(launder.url('//www.google.com') === 'http://www.google.com');
+    it('should return an https url', function() {
+      assert(launder.url('sms://www.apostrophenow.org') === 'sms://www.apostrophenow.org');
+    });
+    it('should return an sms url', function() {
+      assert(launder.url('sms://123456') === 'sms://123456');
+    });
+    it('should return an tel url', function() {
+      assert(launder.url('tel://123456') === 'tel://123456');
+    });
+    it('should return an ftp url', function() {
+      assert(launder.url('ftp://123456') === 'ftp://123456');
+    });
+    it('should return an mailto url', function() {
+      assert(launder.url('mailto://123456') === 'mailto://123456');
+    });
+    it('should not match a non alpha random url', function() {
+      assert(launder.url('random-tag://123456', 'http://www.apostrophenow.org') === 'http://www.apostrophenow.org');
     });
     it('should not match a random url', function() {
-      assert(launder.url('random-tag://123456', 'http://www.apostrophenow.org') === 'http://www.apostrophenow.org');
+      assert(launder.url('randomtag://123456', 'http://www.apostrophenow.org') === 'http://www.apostrophenow.org');
     });
   });
 
