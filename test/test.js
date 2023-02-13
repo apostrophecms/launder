@@ -224,7 +224,7 @@ describe('launder', function() {
       assert(launder.url('javascript:alert(\'All your base are belong to us\');', 'http://www.apostrophenow.org') === 'http://www.apostrophenow.org');
     });
     it('should return an https url', function() {
-      assert(launder.url('sms://www.apostrophenow.org') === 'sms://www.apostrophenow.org');
+      assert(launder.url('https://www.apostrophenow.org') === 'https://www.apostrophenow.org');
     });
     it('should return an sms url', function() {
       assert(launder.url('sms://123456') === 'sms://123456');
@@ -243,6 +243,9 @@ describe('launder', function() {
     });
     it('should not match a random url', function() {
       assert(launder.url('randomtag://123456', 'http://www.apostrophenow.org') === 'http://www.apostrophenow.org');
+    });
+    it('should add https:// when missing if httpsFix is true', function() {
+      assert(launder.url('www.apostrophenow.org', null, true) === 'https://www.apostrophenow.org');
     });
   });
 
