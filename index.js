@@ -124,20 +124,38 @@ module.exports = function(options) {
     function naughtyHref(href) {
       // Browsers ignore character codes of 32 (space) and below in a surprising
       // number of situations. Start reading here:
-      // https://owasp.org/www-community/xss-filter-evasion-cheatsheet#embedded-tab
+      // https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet#Embedded_tab
       // eslint-disable-next-line no-control-regex
       href = href.replace(/[\x00-\x20]+/g, '');
       // Clobber any comments in URLs, which the browser might
       // interpret inside an XML data island, allowing
       // a javascript: URL to be snuck through
-      href = href.replace(/<!--.*?-->/g, '');
+      while (true) {
+        const firstIndex = href.indexOf('<!--');
+        if (firstIndex === -1) {
+          break;
+        }
+        const lastIndex = href.indexOf('-->', firstIndex + 4);
+        if (lastIndex === -1) {
+          break;
+        }
+        href = href.substring(0, firstIndex) + href.substring(lastIndex + 3);
+      }
       // Case insensitive so we don't get faked out by JAVASCRIPT #1
-      var matches = href.match(/^(.+):/);
+      // Allow more characters after the first so we don't get faked
+      // out by certain schemes browsers accept
+      const matches = href.match(/^([a-zA-Z][a-zA-Z0-9.\-+]*):/);
       if (!matches) {
-        // No scheme = no way to inject js (right?)
+        // Protocol-relative URL starting with any combination of '/' and '\'
+        if (href.match(/^[/\\]{2}/)) {
+          return true;
+        }
+
+        // No scheme
         return href;
       }
-      var scheme = matches[1].toLowerCase();
+      const scheme = matches[1].toLowerCase();
+
       return (!_.contains([ 'http', 'https', 'ftp', 'mailto', 'tel', 'sms' ], scheme)) ? true : href;
     }
   };
