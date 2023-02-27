@@ -109,7 +109,7 @@ module.exports = function(options) {
     return s;
 
     function fixUrl(href) {
-      if (href.match(/^(((https?|ftp|tel|sms):\/\/)|mailto:|#|([^/.]+)?\/|[^/.]+$)/)) {
+      if (href.match(/^(((https?|ftp):\/\/)|((mailto|tel|sms):)|#|([^/.]+)?\/|[^/.]+$)/)) {
         // All good - no change required
         return href;
       } else if (href.match(/^[^/.]+\.[^/.]+/)) {
@@ -144,14 +144,9 @@ module.exports = function(options) {
       // Case insensitive so we don't get faked out by JAVASCRIPT #1
       // Allow more characters after the first so we don't get faked
       // out by certain schemes browsers accept
-      const matches = href.match(/^([a-zA-Z][a-zA-Z0-9.\-+]*):/);
+      const matches = href.match(/^([a-zA-Z]+):/);
       if (!matches) {
-        // Protocol-relative URL starting with any combination of '/' and '\'
-        if (href.match(/^[/\\]{2}/)) {
-          return true;
-        }
-
-        // No scheme
+        // No scheme = no way to inject js (right?)
         return href;
       }
       const scheme = matches[1].toLowerCase();
