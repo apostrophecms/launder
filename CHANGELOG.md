@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-* `sms:` urls are now accepted.
+* `sms:` urls are now accepted. Thanks to [Ruben](https://github.com/reubendsouza) for this change.
 
 ## 1.5.1 - 2021-10-28
 
