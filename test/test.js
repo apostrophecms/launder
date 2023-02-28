@@ -223,6 +223,27 @@ describe('launder', function() {
     it('should return the default if it is malicious', function() {
       assert(launder.url('javascript:alert(\'All your base are belong to us\');', 'http://www.apostrophenow.org') === 'http://www.apostrophenow.org');
     });
+    it('should return an https url', function() {
+      assert(launder.url('https://www.apostrophenow.org') === 'https://www.apostrophenow.org');
+    });
+    it('should return an sms url', function() {
+      assert(launder.url('sms:123456') === 'sms:123456');
+    });
+    it('should return an tel url', function() {
+      assert(launder.url('tel:123456') === 'tel:123456');
+    });
+    it('should return an ftp url', function() {
+      assert(launder.url('ftp://123456') === 'ftp://123456');
+    });
+    it('should return an mailto url', function() {
+      assert(launder.url('mailto:123456') === 'mailto:123456');
+    });
+    it('should not match a random url', function() {
+      assert(launder.url('randomtag://123456', 'http://www.apostrophenow.org') === 'http://www.apostrophenow.org');
+    });
+    it('should add https:// when missing if httpsFix is true', function() {
+      assert(launder.url('www.apostrophenow.org', null, true) === 'https://www.apostrophenow.org');
+    });
   });
 
   describe('select', function() {

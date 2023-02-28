@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+* `sms:` urls are now accepted.
+
 ## 1.5.1 - 2021-10-28
 
 * The `date` method now correctly returns `null` if the date argument is unparseable and the `def` parameter is explicitly `null`. As was always documented, a default of `undefined` still returns the current date.
