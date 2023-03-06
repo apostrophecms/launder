@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.6.0 - 2023-03-06
 
 * `sms:` urls are now accepted. Thanks to [Ruben](https://github.com/reubendsouza) for this change.
 
