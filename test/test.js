@@ -1,5 +1,5 @@
 var assert = require('assert');
-var moment = require('moment');
+var dayjs = require('dayjs');
 
 describe('launder', function() {
 
@@ -451,14 +451,14 @@ describe('launder', function() {
       assert(launder.date('2/19/15') === '2015-02-19');
     });
     it('should use the current year if in MM/DD format', function() {
-      var year = moment().format('YYYY');
+      var year = dayjs().format('YYYY');
       assert(launder.date('2/19') === year + '-02-19');
     });
     it('should accept a date object', function() {
       assert(launder.date(new Date(2015, 1, 19)) === '2015-02-19');
     });
     it('should return current date if the date is not parsable', function() {
-      assert(launder.date('waffles') === moment().format('YYYY-MM-DD'));
+      assert(launder.date('waffles') === dayjs().format('YYYY-MM-DD'));
     });
     it('should return default if the date is not parsable', function() {
       assert(launder.date('waffles', '1989-12-13') === '1989-12-13');
@@ -480,7 +480,7 @@ describe('launder', function() {
       assert(launder.formatDate(new Date(2015, 1, 19, 11, 22, 33)) === '2015-02-19');
     });
     it('should default to current date', function() {
-      assert(launder.formatDate() === moment().format('YYYY-MM-DD'));
+      assert(launder.formatDate() === dayjs().format('YYYY-MM-DD'));
     });
   });
 
@@ -521,7 +521,7 @@ describe('launder', function() {
       assert(launder.time('4 PM') === '16:00:00');
     });
     it('should default to the current time', function() {
-      assert(launder.time() === moment().format('HH:mm'));
+      assert(launder.time() === dayjs().format('HH:mm'));
     });
     it('should accept a default', function() {
       assert(launder.time(null, '12:00:00') === '12:00:00');
@@ -533,7 +533,7 @@ describe('launder', function() {
       assert(launder.formatTime(new Date(2015, 1, 19, 11, 22, 33)) === '11:22:33');
     });
     it('should default to current time', function() {
-      assert(launder.formatTime() === moment().format('HH:mm:ss'));
+      assert(launder.formatTime() === dayjs().format('HH:mm:ss'));
     });
   });
 

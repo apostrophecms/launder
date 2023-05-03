@@ -1,5 +1,4 @@
-var _ = require('@sailshq/lodash');
-var moment = require('moment');
+var dayjs = require('dayjs');
 
 module.exports = function(options) {
   var self = {};
@@ -31,7 +30,7 @@ module.exports = function(options) {
     if (!Array.isArray(strings)) {
       return [];
     }
-    return _.map(strings, function(s) {
+    return strings.map(function(s) {
       return self.string(s);
     });
   };
@@ -151,7 +150,7 @@ module.exports = function(options) {
       }
       const scheme = matches[1].toLowerCase();
 
-      return (!_.contains([ 'http', 'https', 'ftp', 'mailto', 'tel', 'sms' ], scheme)) ? true : href;
+      return (![ 'http', 'https', 'ftp', 'mailto', 'tel', 'sms' ].includes(scheme)) ? true : href;
     }
   };
 
@@ -162,7 +161,7 @@ module.exports = function(options) {
     }
     var choice;
     if (typeof (choices[0]) === 'object') {
-      choice = _.find(choices, function(choice) {
+      choice = choices.find(function(choice) {
         if ((choice.value === null) || (choice.value === undefined)) {
           // Don't crash on invalid choices
           return;
@@ -174,7 +173,7 @@ module.exports = function(options) {
       }
       return def;
     }
-    choice = _.find(choices, function(choice) {
+    choice = choices.find(function(choice) {
       if ((choice === null) || (choice === undefined)) {
         // Don't crash on invalid choices
         return;
@@ -329,7 +328,7 @@ module.exports = function(options) {
 
     function returnDefault() {
       if (def === undefined) {
-        def = moment().format('YYYY-MM-DD');
+        def = dayjs().format('YYYY-MM-DD');
       }
       return def;
     }
@@ -394,7 +393,7 @@ module.exports = function(options) {
   // Given a date object, return a date string in Apostrophe's preferred sortable, comparable, JSON-able format,
   // which is YYYY-MM-DD. If `date` is undefined the current date is used.
   self.formatDate = function(date) {
-    return moment(date).format('YYYY-MM-DD');
+    return dayjs(date).format('YYYY-MM-DD');
   };
 
   // Accepts a user-entered string in 12-hour or 24-hour time and returns a string
@@ -428,7 +427,7 @@ module.exports = function(options) {
       if (def !== undefined) {
         return def;
       }
-      return moment().format('HH:mm');
+      return dayjs().format('HH:mm');
     }
   };
 
@@ -440,7 +439,7 @@ module.exports = function(options) {
   // If `date` is missing the current time is used.
 
   self.formatTime = function(date) {
-    return moment(date).format('HH:mm:ss');
+    return dayjs(date).format('HH:mm:ss');
   };
 
   // Sanitize tags. Tags should be submitted as an array of strings,
@@ -461,15 +460,10 @@ module.exports = function(options) {
     if (!Array.isArray(tags)) {
       return [];
     }
-    return _.filter(
-      _.map(
-        _.map(tags, function(t) {
-          return self.string(t);
-        }),
-        filter || self.filterTag
-      ), function(tag) {
-        return !!tag.length;
-      });
+    const strings = tags.map(tag => self.string(tag));
+    const rewritten = strings.map(filter || self.filterTag);
+    const filtered = rewritten.filter(tag => tag.length > 0);
+    return filtered;
   };
 
   // Sanitize an id. IDs must consist solely of upper and lower case
@@ -495,7 +489,7 @@ module.exports = function(options) {
     if (!Array.isArray(ids)) {
       return [];
     }
-    var result = _.filter(ids, function(id) {
+    var result = ids.filter(function(id) {
       return (self.id(id) !== undefined);
     });
     return result;
