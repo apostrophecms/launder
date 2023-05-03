@@ -1,9 +1,9 @@
-var assert = require('assert');
-var dayjs = require('dayjs');
+const assert = require('assert');
+const dayjs = require('dayjs');
 
 describe('launder', function() {
 
-  var launder = require('../index.js')();
+  const launder = require('../index.js')();
 
   it('should exist', function() {
     assert(launder);
@@ -17,7 +17,7 @@ describe('launder', function() {
     });
 
     it('should take a new filterTag function', function() {
-      var launderWithFilterTag = require('../index.js')({
+      const launderWithFilterTag = require('../index.js')({
         filterTag: function(tag) {
           return 'punk';
         }
@@ -126,13 +126,13 @@ describe('launder', function() {
 
   describe('strings', function() {
     it('should do good stuff to an array of strings', function() {
-      var s = launder.strings(['  testing ', 123]);
+      const s = launder.strings(['  testing ', 123]);
       assert(s[0] === 'testing');
       assert(s[1] === '123');
     });
 
     it('should return an empty array if we pass in something that is not an array', function() {
-      var s = launder.strings({an: 'object', is: 'not', typeof: 'array'});
+      const s = launder.strings({an: 'object', is: 'not', typeof: 'array'});
       assert(Array.isArray(s));
       assert(s.length === 0);
     });
@@ -251,7 +251,7 @@ describe('launder', function() {
       assert(launder.select('n', ['p', 'u', 'n', 'k']) === 'n');
     });
     it('should do nothing to a good choice from an object', function() {
-      var s = launder.select('n', [
+      const s = launder.select('n', [
         { name: 'Probably amazing', value: 'p' },
         { name: 'Utterly incredible', value: 'u' },
         { name: 'Never gonna give you up', value: 'n' },
@@ -281,7 +281,7 @@ describe('launder', function() {
       assert(launder.select('yes', [{ value: 'not', label: 'Not' }, { value: undefined, label: 'broken' }, { value: 'yes', label: 'Yes' }]) === 'yes');
     });
     it('should return the default if the choice is not found in an object', function() {
-      var s = launder.select('hi', [
+      const s = launder.select('hi', [
         { name: 'Not something', value: 'not' },
         { name: 'Inside', value: 'in' },
         { name: 'Here anymore', value: 'here' }
@@ -376,11 +376,11 @@ describe('launder', function() {
   });
 
   describe('addBooleanFilterToCriteria', function() {
-    var name = 'published';
-    var criteria = {};
-    var optionsTrue = { 'published': true };
-    var optionsFalse = { 'published': false };
-    var optionsEmpty = { 'published': '' };
+    const name = 'published';
+    const criteria = {};
+    const optionsTrue = { 'published': true };
+    const optionsFalse = { 'published': false };
+    const optionsEmpty = { 'published': '' };
 
     it('should not change criteria if option is `any`', function() {
       launder.addBooleanFilterToCriteria('any', name, criteria);
@@ -398,22 +398,22 @@ describe('launder', function() {
     it('should use `name` property of `options` if `options` is an object', function() {
       launder.addBooleanFilterToCriteria(optionsTrue, name, criteria);
       assert(criteria[name] === true);
-      var criteria2 = {};
+      const criteria2 = {};
       launder.addBooleanFilterToCriteria(optionsFalse, name, criteria2);
       assert(criteria2[name]['$ne'] === true);
     });
     it('should be able to use a boolean string `true` for options', function() {
-      var criteria = {};
+      const criteria = {};
       launder.addBooleanFilterToCriteria('true', name, criteria);
       assert(criteria[name] === true);
     });
     it('should be able to use a boolean string `y` for options', function() {
-      var criteria = {};
+      const criteria = {};
       launder.addBooleanFilterToCriteria('y', name, criteria);
       assert(criteria[name] === true);
     });
     it('should be able to use a real boolean for options', function() {
-      var criteria = {};
+      let criteria = {};
       launder.addBooleanFilterToCriteria(true, name, criteria);
       assert(criteria[name] === true);
       criteria = {};
@@ -421,17 +421,17 @@ describe('launder', function() {
       assert(criteria[name]['$ne'] === true);
     });
     it('should treat empty string as false', function() {
-      var criteria = {};
+      const criteria = {};
       launder.addBooleanFilterToCriteria('', name, criteria);
       assert(criteria[name]['$ne'] === true);
     });
     it('should treat empty string in an object as false', function() {
-      var criteria = {};
+      const criteria = {};
       launder.addBooleanFilterToCriteria(optionsEmpty, name, criteria);
       assert(criteria[name]['$ne'] === true);
     });
     it('should take a default if `options` or `options[name]` is undefined', function() {
-      var criteria = {};
+      const criteria = {};
       launder.addBooleanFilterToCriteria({}, name, criteria, false);
       assert(criteria[name]['$ne'] === true);
     });
@@ -451,7 +451,7 @@ describe('launder', function() {
       assert(launder.date('2/19/15') === '2015-02-19');
     });
     it('should use the current year if in MM/DD format', function() {
-      var year = dayjs().format('YYYY');
+      const year = dayjs().format('YYYY');
       assert(launder.date('2/19') === year + '-02-19');
     });
     it('should accept a date object', function() {
@@ -538,60 +538,60 @@ describe('launder', function() {
   });
 
   describe('tags', function() {
-    var goodTags = ['one', 'two', 'three'];
-    var spaceyTags = [' One', 'TWO', '    three  '];
-    var numberTags = [12, 34];
-    var troubleTags = ['one', 2, {an: 'object'}, null, 'three'];
+    const goodTags = ['one', 'two', 'three'];
+    const spaceyTags = [' One', 'TWO', '    three  '];
+    const numberTags = [12, 34];
+    const troubleTags = ['one', 2, {an: 'object'}, null, 'three'];
 
     it('should do nothing to a good array of tags', function() {
-      var t = launder.tags(goodTags);
+      const t = launder.tags(goodTags);
       assert(t.length === 3);
       assert(t[0] === 'one');
       assert(t[1] === 'two');
       assert(t[2] === 'three');
     });
     it('should apply default filterTag function', function() {
-      var t = launder.tags(spaceyTags);
+      const t = launder.tags(spaceyTags);
       assert(t.length === 3);
       assert(t[0] === 'one');
       assert(t[1] === 'two');
       assert(t[2] === 'three');
     });
     it('should return an empty array if you pass in something that is not an array', function() {
-      var t = launder.tags({an: 'object', is: 'not', typeof: 'array'});
+      const t = launder.tags({an: 'object', is: 'not', typeof: 'array'});
       assert(Array.isArray(t));
       assert(t.length === 0);
     });
     it('should convert numbers to strings in tags', function() {
-      var t = launder.tags(numberTags);
+      const t = launder.tags(numberTags);
       assert(t.length === 2);
       assert(t[0] === '12');
       assert(t[1] === '34');
     });
     it('should remove things that are not strings or numbers', function() {
-      var t = launder.tags(troubleTags);
+      const t = launder.tags(troubleTags);
       assert(t.length === 3);
       assert(t[0] === 'one');
       assert(t[1] === '2');
       assert(t[2] === 'three');
     });
     it('should take a filter function', function() {
-      var t = launder.tags(numberTags, function(tag) { return tag + '0'; });
+      const t = launder.tags(numberTags, function(tag) { return tag + '0'; });
       assert(t.length === 2);
       assert(t[0] === '120');
       assert(t[1] === '340');
     });
     it('should allow a different filter function to be set during initiation', function() {
-      var launder = require('../index.js')({
+      const launder = require('../index.js')({
         filterTag: function(tag) { return tag + '0'; }
       });
-      var t = launder.tags(numberTags);
+      const t = launder.tags(numberTags);
       assert(t.length === 2);
       assert(t[0] === '120');
       assert(t[1] === '340');
     });
     it('should remove empty tags', function() {
-      var t = launder.tags([ '1', '2', '' ]);
+      const t = launder.tags([ '1', '2', '' ]);
       assert(t.length === 2);
       assert(t[0] === '1');
       assert(t[1] === '2');
@@ -612,31 +612,31 @@ describe('launder', function() {
   });
 
   describe('ids', function() {
-    var goodIds = [ '1001', '1002', '1003' ];
-    var troubleIds = [ '1001', '1002', { an: 'object' }, null, '1003', '1004-en' ];
+    const goodIds = [ '1001', '1002', '1003' ];
+    const troubleIds = [ '1001', '1002', { an: 'object' }, null, '1003', '1004-en' ];
     it('should do nothing with a good array of ids', function() {
-      var i = launder.ids(goodIds);
+      const i = launder.ids(goodIds);
       assert(i.length === 3);
       assert(i[0] === '1001');
       assert(i[1] === '1002');
       assert(i[2] === '1003');
     });
     it('should return an empty array if you pass in something that is not an array', function() {
-      var i = launder.ids({ an: 'object', is: 'not', typeof: 'array' });
+      const i = launder.ids({ an: 'object', is: 'not', typeof: 'array' });
       assert(Array.isArray(i));
       assert(i.length === 0);
     });
     it('should remove items that are not valid ids', function() {
-      var i = launder.ids(troubleIds);
+      const i = launder.ids(troubleIds);
       assert(i.length === 3);
       assert(i[0] === '1001');
       assert(i[1] === '1002');
       assert(i[2] === '1003');
     });
     it('should honor the idRegExp option', function() {
-      var launder = require('../index.js')({ idRegExp: /^[A-Za-z0-9_-]+$/ });
-      var testIds = [ '1001', '1002', { an: 'object' }, null, '1003', '1004-en' ];
-      var i = launder.ids(testIds);
+      const launder = require('../index.js')({ idRegExp: /^[A-Za-z0-9_-]+$/ });
+      const testIds = [ '1001', '1002', { an: 'object' }, null, '1003', '1004-en' ];
+      const i = launder.ids(testIds);
       assert.strictEqual(i.length, 4);
       assert(i[0] === '1001');
       assert(i[1] === '1002');

@@ -17,18 +17,18 @@ In addition to sanitization methods, Launder does contain a few other tools, suc
 ## Usage
 
 ```javascript
-var launder = require('launder')();
+const launder = require('launder')();
 
 app.post('/form', function(req, res) {
-  var units = launder.integer(req.body.units, 0, 0, 100);
-  var birthdate = launder.date(req.body.birthdate);
+  const units = launder.integer(req.body.units, 0, 0, 100);
+  const birthdate = launder.date(req.body.birthdate);
 });
 ```
 
 You can also specify global options:
 
 ```javascript
-var launder = require('launder')({
+const launder = require('launder')({
   filterTag: function(tag) { return tag.toLowerCase(); }
 });
 ```

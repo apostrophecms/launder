@@ -1,7 +1,7 @@
-var dayjs = require('dayjs');
+const dayjs = require('dayjs');
 
 module.exports = function(options) {
-  var self = {};
+  const self = {};
   self.options = options || {};
 
   self.filterTag = self.options.filterTag || function(tag) {
@@ -61,7 +61,7 @@ module.exports = function(options) {
   };
 
   self.padInteger = function(i, places) {
-    var s = i + '';
+    let s = i + '';
     while (s.length < places) {
       s = '0' + s;
     }
@@ -113,7 +113,7 @@ module.exports = function(options) {
         return href;
       } else if (href.match(/^[^/.]+\.[^/.]+/)) {
         // Smells like a domain name. Educated guess: they left off http://
-        var protocol = httpsFix ? 'https://' : 'http://';
+        const protocol = httpsFix ? 'https://' : 'http://';
         return protocol + href;
       } else {
         return null;
@@ -159,7 +159,7 @@ module.exports = function(options) {
     if (!choices || !choices.length) {
       return def;
     }
-    var choice;
+    let choice;
     if (typeof (choices[0]) === 'object') {
       choice = choices.find(function(choice) {
         if ((choice.value === null) || (choice.value === undefined)) {
@@ -237,7 +237,7 @@ module.exports = function(options) {
     }
 
     // allow object or boolean
-    var value = (typeof (options) === 'object' && options !== null) ? options[name] : options;
+    let value = (typeof (options) === 'object' && options !== null) ? options[name] : options;
     value = (value === undefined) ? def : value;
     value = self.booleanOrNull(value);
 
@@ -324,7 +324,7 @@ module.exports = function(options) {
   // value to all of them.
 
   self.date = function(date, def, now) {
-    var components;
+    let components;
 
     function returnDefault() {
       if (def === undefined) {
@@ -348,10 +348,10 @@ module.exports = function(options) {
             // we get the intuitive result for both 1/1/75,
             // 1/1/99 and 1/1/25. It's a nasty habit among
             // us imprecise humans. -Tom
-            var d = (now || new Date());
-            var nowYear = d.getFullYear() % 100;
-            var nowCentury = d.getFullYear() - nowYear;
-            var theirYear = parseInt(components[2]) + nowCentury;
+            const d = (now || new Date());
+            const nowYear = d.getFullYear() % 100;
+            const nowCentury = d.getFullYear() - nowYear;
+            let theirYear = parseInt(components[2]) + nowCentury;
             if (theirYear - d.getFullYear() > 50) {
               theirYear -= 100;
             }
@@ -405,12 +405,12 @@ module.exports = function(options) {
   self.time = function(time, def) {
     time = self.string(time).toLowerCase();
     time = time.trim();
-    var components = time.match(/^(\d+)([:|.](\d+))?([:|.](\d+))?\s*(am|pm|AM|PM|a|p|A|M)?$/);
+    const components = time.match(/^(\d+)([:|.](\d+))?([:|.](\d+))?\s*(am|pm|AM|PM|a|p|A|M)?$/);
     if (components) {
-      var hours = parseInt(components[1], 10);
-      var minutes = (components[3] !== undefined) ? parseInt(components[3], 10) : 0;
-      var seconds = (components[5] !== undefined) ? parseInt(components[5], 10) : 0;
-      var ampm = (components[6]) ? components[6].toLowerCase() : components[6];
+      let hours = parseInt(components[1], 10);
+      const minutes = (components[3] !== undefined) ? parseInt(components[3], 10) : 0;
+      const seconds = (components[5] !== undefined) ? parseInt(components[5], 10) : 0;
+      let ampm = (components[6]) ? components[6].toLowerCase() : components[6];
       ampm = ampm && ampm.charAt(0);
       if ((hours === 12) && (ampm === 'a')) {
         hours -= 12;
@@ -472,7 +472,7 @@ module.exports = function(options) {
   self.idRegExp = self.options.idRegExp || /^[A-Za-z0-9_]+$/;
 
   self.id = function(s, def) {
-    var id = self.string(s, def);
+    const id = self.string(s, def);
     if (id === def) {
       return id;
     }
@@ -489,7 +489,7 @@ module.exports = function(options) {
     if (!Array.isArray(ids)) {
       return [];
     }
-    var result = ids.filter(function(id) {
+    const result = ids.filter(function(id) {
       return (self.id(id) !== undefined);
     });
     return result;
