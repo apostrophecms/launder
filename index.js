@@ -1,8 +1,7 @@
-var _ = require('@sailshq/lodash');
-var moment = require('moment');
+const dayjs = require('dayjs');
 
 module.exports = function(options) {
-  var self = {};
+  const self = {};
   self.options = options || {};
 
   self.filterTag = self.options.filterTag || function(tag) {
@@ -31,7 +30,7 @@ module.exports = function(options) {
     if (!Array.isArray(strings)) {
       return [];
     }
-    return _.map(strings, function(s) {
+    return strings.map(function(s) {
       return self.string(s);
     });
   };
@@ -62,7 +61,7 @@ module.exports = function(options) {
   };
 
   self.padInteger = function(i, places) {
-    var s = i + '';
+    let s = i + '';
     while (s.length < places) {
       s = '0' + s;
     }
@@ -114,7 +113,7 @@ module.exports = function(options) {
         return href;
       } else if (href.match(/^[^/.]+\.[^/.]+/)) {
         // Smells like a domain name. Educated guess: they left off http://
-        var protocol = httpsFix ? 'https://' : 'http://';
+        const protocol = httpsFix ? 'https://' : 'http://';
         return protocol + href;
       } else {
         return null;
@@ -151,7 +150,7 @@ module.exports = function(options) {
       }
       const scheme = matches[1].toLowerCase();
 
-      return (!_.contains([ 'http', 'https', 'ftp', 'mailto', 'tel', 'sms' ], scheme)) ? true : href;
+      return (![ 'http', 'https', 'ftp', 'mailto', 'tel', 'sms' ].includes(scheme)) ? true : href;
     }
   };
 
@@ -160,9 +159,9 @@ module.exports = function(options) {
     if (!choices || !choices.length) {
       return def;
     }
-    var choice;
+    let choice;
     if (typeof (choices[0]) === 'object') {
-      choice = _.find(choices, function(choice) {
+      choice = choices.find(function(choice) {
         if ((choice.value === null) || (choice.value === undefined)) {
           // Don't crash on invalid choices
           return;
@@ -174,7 +173,7 @@ module.exports = function(options) {
       }
       return def;
     }
-    choice = _.find(choices, function(choice) {
+    choice = choices.find(function(choice) {
       if ((choice === null) || (choice === undefined)) {
         // Don't crash on invalid choices
         return;
@@ -238,7 +237,7 @@ module.exports = function(options) {
     }
 
     // allow object or boolean
-    var value = (typeof (options) === 'object' && options !== null) ? options[name] : options;
+    let value = (typeof (options) === 'object' && options !== null) ? options[name] : options;
     value = (value === undefined) ? def : value;
     value = self.booleanOrNull(value);
 
@@ -325,11 +324,11 @@ module.exports = function(options) {
   // value to all of them.
 
   self.date = function(date, def, now) {
-    var components;
+    let components;
 
     function returnDefault() {
       if (def === undefined) {
-        def = moment().format('YYYY-MM-DD');
+        def = dayjs().format('YYYY-MM-DD');
       }
       return def;
     }
@@ -349,10 +348,10 @@ module.exports = function(options) {
             // we get the intuitive result for both 1/1/75,
             // 1/1/99 and 1/1/25. It's a nasty habit among
             // us imprecise humans. -Tom
-            var d = (now || new Date());
-            var nowYear = d.getFullYear() % 100;
-            var nowCentury = d.getFullYear() - nowYear;
-            var theirYear = parseInt(components[2]) + nowCentury;
+            const d = (now || new Date());
+            const nowYear = d.getFullYear() % 100;
+            const nowCentury = d.getFullYear() - nowYear;
+            let theirYear = parseInt(components[2]) + nowCentury;
             if (theirYear - d.getFullYear() > 50) {
               theirYear -= 100;
             }
@@ -394,7 +393,7 @@ module.exports = function(options) {
   // Given a date object, return a date string in Apostrophe's preferred sortable, comparable, JSON-able format,
   // which is YYYY-MM-DD. If `date` is undefined the current date is used.
   self.formatDate = function(date) {
-    return moment(date).format('YYYY-MM-DD');
+    return dayjs(date).format('YYYY-MM-DD');
   };
 
   // Accepts a user-entered string in 12-hour or 24-hour time and returns a string
@@ -406,12 +405,12 @@ module.exports = function(options) {
   self.time = function(time, def) {
     time = self.string(time).toLowerCase();
     time = time.trim();
-    var components = time.match(/^(\d+)([:|.](\d+))?([:|.](\d+))?\s*(am|pm|AM|PM|a|p|A|M)?$/);
+    const components = time.match(/^(\d+)([:|.](\d+))?([:|.](\d+))?\s*(am|pm|AM|PM|a|p|A|M)?$/);
     if (components) {
-      var hours = parseInt(components[1], 10);
-      var minutes = (components[3] !== undefined) ? parseInt(components[3], 10) : 0;
-      var seconds = (components[5] !== undefined) ? parseInt(components[5], 10) : 0;
-      var ampm = (components[6]) ? components[6].toLowerCase() : components[6];
+      let hours = parseInt(components[1], 10);
+      const minutes = (components[3] !== undefined) ? parseInt(components[3], 10) : 0;
+      const seconds = (components[5] !== undefined) ? parseInt(components[5], 10) : 0;
+      let ampm = (components[6]) ? components[6].toLowerCase() : components[6];
       ampm = ampm && ampm.charAt(0);
       if ((hours === 12) && (ampm === 'a')) {
         hours -= 12;
@@ -428,7 +427,7 @@ module.exports = function(options) {
       if (def !== undefined) {
         return def;
       }
-      return moment().format('HH:mm');
+      return dayjs().format('HH:mm');
     }
   };
 
@@ -440,7 +439,7 @@ module.exports = function(options) {
   // If `date` is missing the current time is used.
 
   self.formatTime = function(date) {
-    return moment(date).format('HH:mm:ss');
+    return dayjs(date).format('HH:mm:ss');
   };
 
   // Sanitize tags. Tags should be submitted as an array of strings,
@@ -461,15 +460,10 @@ module.exports = function(options) {
     if (!Array.isArray(tags)) {
       return [];
     }
-    return _.filter(
-      _.map(
-        _.map(tags, function(t) {
-          return self.string(t);
-        }),
-        filter || self.filterTag
-      ), function(tag) {
-        return !!tag.length;
-      });
+    const strings = tags.map(tag => self.string(tag));
+    const rewritten = strings.map(filter || self.filterTag);
+    const filtered = rewritten.filter(tag => tag.length > 0);
+    return filtered;
   };
 
   // Sanitize an id. IDs must consist solely of upper and lower case
@@ -478,7 +472,7 @@ module.exports = function(options) {
   self.idRegExp = self.options.idRegExp || /^[A-Za-z0-9_]+$/;
 
   self.id = function(s, def) {
-    var id = self.string(s, def);
+    const id = self.string(s, def);
     if (id === def) {
       return id;
     }
@@ -495,7 +489,7 @@ module.exports = function(options) {
     if (!Array.isArray(ids)) {
       return [];
     }
-    var result = _.filter(ids, function(id) {
+    const result = ids.filter(function(id) {
       return (self.id(id) !== undefined);
     });
     return result;

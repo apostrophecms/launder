@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.0 - 2023-05-03
+
+* Modernize dependencies to correct installation warnings, and eliminate use of `var`.
+
 ## 1.6.0 - 2023-03-06
 
 * `sms:` urls are now accepted. Thanks to [Ruben](https://github.com/reubendsouza) for this change.
