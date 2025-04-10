@@ -164,7 +164,7 @@ module.exports = function(options) {
       choice = choices.find(function(choice) {
         if ((choice.value === null) || (choice.value === undefined)) {
           // Don't crash on invalid choices
-          return null;
+          return false;
         }
         return choice.value.toString() === s;
       });
@@ -176,7 +176,7 @@ module.exports = function(options) {
     choice = choices.find(function(choice) {
       if ((choice === null) || (choice === undefined)) {
         // Don't crash on invalid choices
-        return null;
+        return false;
       }
       return choice.toString() === s;
     });
