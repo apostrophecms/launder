@@ -1,5 +1,3 @@
-[![CircleCI](https://circleci.com/gh/apostrophecms/launder/tree/master.svg?style=svg)](https://circleci.com/gh/apostrophecms/launder/tree/master)
-
 <a href="https://apostrophecms.com/"><img src="https://raw.github.com/apostrophecms/launder/master/logos/logo-box-madefor.png" align="right" /></a>
 
 A sanitization module for the people. Built for use in the [ApostropheCMS](https://apostrophecms.com), useful for many other things.

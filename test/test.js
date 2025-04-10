@@ -115,24 +115,30 @@ describe('launder', function() {
     });
 
     it('should convert non-string/non-number to an empty string', function() {
-      assert(launder.string({an: 'object'}) === '');
-      assert(launder.string(function() { return 'still not a string'; }) === '');
+      assert(launder.string({ an: 'object' }) === '');
+      assert(launder.string(function() {
+        return 'still not a string';
+      }) === '');
     });
 
     it('should use a default for non-strings', function() {
-      assert(launder.string({an: 'object'}, 'default') === 'default');
+      assert(launder.string({ an: 'object' }, 'default') === 'default');
     });
   });
 
   describe('strings', function() {
     it('should do good stuff to an array of strings', function() {
-      const s = launder.strings(['  testing ', 123]);
+      const s = launder.strings([ '  testing ', 123 ]);
       assert(s[0] === 'testing');
       assert(s[1] === '123');
     });
 
     it('should return an empty array if we pass in something that is not an array', function() {
-      const s = launder.strings({an: 'object', is: 'not', typeof: 'array'});
+      const s = launder.strings({
+        an: 'object',
+        is: 'not',
+        typeof: 'array'
+      });
       assert(Array.isArray(s));
       assert(s.length === 0);
     });
@@ -248,14 +254,26 @@ describe('launder', function() {
 
   describe('select', function() {
     it('should do nothing to a good choice from an array', function() {
-      assert(launder.select('n', ['p', 'u', 'n', 'k']) === 'n');
+      assert(launder.select('n', [ 'p', 'u', 'n', 'k' ]) === 'n');
     });
     it('should do nothing to a good choice from an object', function() {
       const s = launder.select('n', [
-        { name: 'Probably amazing', value: 'p' },
-        { name: 'Utterly incredible', value: 'u' },
-        { name: 'Never gonna give you up', value: 'n' },
-        { name: 'Kind hearted', value: 'k' }
+        {
+          name: 'Probably amazing',
+          value: 'p'
+        },
+        {
+          name: 'Utterly incredible',
+          value: 'u'
+        },
+        {
+          name: 'Never gonna give you up',
+          value: 'n'
+        },
+        {
+          name: 'Kind hearted',
+          value: 'k'
+        }
       ]);
       assert(s === 'n');
     });
@@ -266,36 +284,63 @@ describe('launder', function() {
       assert(launder.select('hi', [], 'bye') === 'bye');
     });
     it('should return the default if the choice is not found in an array', function() {
-      assert(launder.select('hi', ['not', 'in', 'here'], 'bye') === 'bye');
+      assert(launder.select('hi', [ 'not', 'in', 'here' ], 'bye') === 'bye');
     });
     it('should not crash if a null choice is present', function() {
-      assert(launder.select('yes', ['not', null, 'yes']) === 'yes');
+      assert(launder.select('yes', [ 'not', null, 'yes' ]) === 'yes');
     });
     it('should not crash if an undefined choice is present', function() {
-      assert(launder.select('yes', ['not', undefined, 'yes']) === 'yes');
+      assert(launder.select('yes', [ 'not', undefined, 'yes' ]) === 'yes');
     });
     it('should not crash if a null choice is present, with labels', function() {
-      assert(launder.select('yes', [{ value: 'not', label: 'Not' }, { value: null, label: 'broken' }, { value: 'yes', label: 'Yes' }]) === 'yes');
+      assert(launder.select('yes', [ {
+        value: 'not',
+        label: 'Not'
+      }, {
+        value: null,
+        label: 'broken'
+      }, {
+        value: 'yes',
+        label: 'Yes'
+      } ]) === 'yes');
     });
     it('should not crash if an undefined choice is present, with labels', function() {
-      assert(launder.select('yes', [{ value: 'not', label: 'Not' }, { value: undefined, label: 'broken' }, { value: 'yes', label: 'Yes' }]) === 'yes');
+      assert(launder.select('yes', [ {
+        value: 'not',
+        label: 'Not'
+      }, {
+        value: undefined,
+        label: 'broken'
+      }, {
+        value: 'yes',
+        label: 'Yes'
+      } ]) === 'yes');
     });
     it('should return the default if the choice is not found in an object', function() {
       const s = launder.select('hi', [
-        { name: 'Not something', value: 'not' },
-        { name: 'Inside', value: 'in' },
-        { name: 'Here anymore', value: 'here' }
+        {
+          name: 'Not something',
+          value: 'not'
+        },
+        {
+          name: 'Inside',
+          value: 'in'
+        },
+        {
+          name: 'Here anymore',
+          value: 'here'
+        }
       ], 'bye');
       assert(s === 'bye');
     });
     it('should return the default if the choice is not found in an array', function() {
-      assert(launder.select('hi', ['not', 'in', 'here'], 'bye') === 'bye');
+      assert(launder.select('hi', [ 'not', 'in', 'here' ], 'bye') === 'bye');
     });
     it('should match a string input matching the string representation of a choice that is a number, and return the number, not the string', function() {
-      assert(launder.select('5', [1, 3, 5], 1) === 5);
+      assert(launder.select('5', [ 1, 3, 5 ], 1) === 5);
     });
     it('should match a number matching a choice that is a number, and return the number, not a stringification of it', function() {
-      assert(launder.select(5, [1, 3, 5], 1) === 5);
+      assert(launder.select(5, [ 1, 3, 5 ], 1) === 5);
     });
   });
 
@@ -378,9 +423,9 @@ describe('launder', function() {
   describe('addBooleanFilterToCriteria', function() {
     const name = 'published';
     const criteria = {};
-    const optionsTrue = { 'published': true };
-    const optionsFalse = { 'published': false };
-    const optionsEmpty = { 'published': '' };
+    const optionsTrue = { published: true };
+    const optionsFalse = { published: false };
+    const optionsEmpty = { published: '' };
 
     it('should not change criteria if option is `any`', function() {
       launder.addBooleanFilterToCriteria('any', name, criteria);
@@ -400,7 +445,7 @@ describe('launder', function() {
       assert(criteria[name] === true);
       const criteria2 = {};
       launder.addBooleanFilterToCriteria(optionsFalse, name, criteria2);
-      assert(criteria2[name]['$ne'] === true);
+      assert(criteria2[name].$ne === true);
     });
     it('should be able to use a boolean string `true` for options', function() {
       const criteria = {};
@@ -418,22 +463,22 @@ describe('launder', function() {
       assert(criteria[name] === true);
       criteria = {};
       launder.addBooleanFilterToCriteria(false, name, criteria);
-      assert(criteria[name]['$ne'] === true);
+      assert(criteria[name].$ne === true);
     });
     it('should treat empty string as false', function() {
       const criteria = {};
       launder.addBooleanFilterToCriteria('', name, criteria);
-      assert(criteria[name]['$ne'] === true);
+      assert(criteria[name].$ne === true);
     });
     it('should treat empty string in an object as false', function() {
       const criteria = {};
       launder.addBooleanFilterToCriteria(optionsEmpty, name, criteria);
-      assert(criteria[name]['$ne'] === true);
+      assert(criteria[name].$ne === true);
     });
     it('should take a default if `options` or `options[name]` is undefined', function() {
       const criteria = {};
       launder.addBooleanFilterToCriteria({}, name, criteria, false);
-      assert(criteria[name]['$ne'] === true);
+      assert(criteria[name].$ne === true);
     });
   });
 
@@ -538,10 +583,10 @@ describe('launder', function() {
   });
 
   describe('tags', function() {
-    const goodTags = ['one', 'two', 'three'];
-    const spaceyTags = [' One', 'TWO', '    three  '];
-    const numberTags = [12, 34];
-    const troubleTags = ['one', 2, {an: 'object'}, null, 'three'];
+    const goodTags = [ 'one', 'two', 'three' ];
+    const spaceyTags = [ ' One', 'TWO', '    three  ' ];
+    const numberTags = [ 12, 34 ];
+    const troubleTags = [ 'one', 2, { an: 'object' }, null, 'three' ];
 
     it('should do nothing to a good array of tags', function() {
       const t = launder.tags(goodTags);
@@ -558,7 +603,11 @@ describe('launder', function() {
       assert(t[2] === 'three');
     });
     it('should return an empty array if you pass in something that is not an array', function() {
-      const t = launder.tags({an: 'object', is: 'not', typeof: 'array'});
+      const t = launder.tags({
+        an: 'object',
+        is: 'not',
+        typeof: 'array'
+      });
       assert(Array.isArray(t));
       assert(t.length === 0);
     });
@@ -576,14 +625,18 @@ describe('launder', function() {
       assert(t[2] === 'three');
     });
     it('should take a filter function', function() {
-      const t = launder.tags(numberTags, function(tag) { return tag + '0'; });
+      const t = launder.tags(numberTags, function(tag) {
+        return tag + '0';
+      });
       assert(t.length === 2);
       assert(t[0] === '120');
       assert(t[1] === '340');
     });
     it('should allow a different filter function to be set during initiation', function() {
       const launder = require('../index.js')({
-        filterTag: function(tag) { return tag + '0'; }
+        filterTag: function(tag) {
+          return tag + '0';
+        }
       });
       const t = launder.tags(numberTags);
       assert(t.length === 2);
@@ -622,7 +675,11 @@ describe('launder', function() {
       assert(i[2] === '1003');
     });
     it('should return an empty array if you pass in something that is not an array', function() {
-      const i = launder.ids({ an: 'object', is: 'not', typeof: 'array' });
+      const i = launder.ids({
+        an: 'object',
+        is: 'not',
+        typeof: 'array'
+      });
       assert(Array.isArray(i));
       assert(i.length === 0);
     });

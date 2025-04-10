@@ -164,7 +164,7 @@ module.exports = function(options) {
       choice = choices.find(function(choice) {
         if ((choice.value === null) || (choice.value === undefined)) {
           // Don't crash on invalid choices
-          return;
+          return false;
         }
         return choice.value.toString() === s;
       });
@@ -176,7 +176,7 @@ module.exports = function(options) {
     choice = choices.find(function(choice) {
       if ((choice === null) || (choice === undefined)) {
         // Don't crash on invalid choices
-        return;
+        return false;
       }
       return choice.toString() === s;
     });
@@ -390,8 +390,9 @@ module.exports = function(options) {
   };
 
   // This is likely not relevent to you unless you're using Apostrophe
-  // Given a date object, return a date string in Apostrophe's preferred sortable, comparable, JSON-able format,
-  // which is YYYY-MM-DD. If `date` is undefined the current date is used.
+  // Given a date object, return a date string in Apostrophe's preferred sortable,
+  // comparable, JSON-able format, which is YYYY-MM-DD. If `date` is undefined
+  // the current date is used.
   self.formatDate = function(date) {
     return dayjs(date).format('YYYY-MM-DD');
   };
